@@ -1,0 +1,10 @@
+<% if(typeof errors !='undefined' ) { %>
+  <% errors.forEach(function(error) { %>
+    <div class="alert alert-primary alert-dismissible fade show m-2" role="alert">
+        <%= error.msg %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% }); %>
+<% } %>
+
+<script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>

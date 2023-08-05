@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Management</title>
+  <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background-color:lightblue;">
+  <%- include('./public/Navbar.ejs') %>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 pb-5">
+          <form action="/editexcel" method="post" enctype="multipart/form-data">
+            <div class="card border-primary rounded-0"
+              style="border: none; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;">
+              <div class="card-header p-0">
+                <div class="bg-info text-white text-center py-2">
+                  <h3><i class="fa fa-envelope"></i> Update Entry Here</h3>
+                </div>
+              </div>
+              <div class="card-body p-3 mt-3 mb-3">
+
+                <!--Body-->
+
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                      <input type="text" class="form-control" id="tablename" name="tablename"
+                          placeholder="Table Name" value = <%= tableName %> required>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <div class="input-group mb-2">
+                      <input type="text" class="form-control" id="index" name="index"
+                          placeholder="Entry NUMBER" value = <%= entryNumber %> required>
+                  </div>
+              </div>
+
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="FILENAME" name="FILENAME" value="<%= values[0].FILENAME %>" placeholder="File Name">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="YEAR" name="YEAR"  value="<%= values[0].YEAR %>" placeholder="Year">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="CODE" name="CODE"  value="<%= values[0].CODE %>" placeholder="CODE">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="TALUK" name="TALUK"   value="<%= values[0].TALUK %>" placeholder="Taluk">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                      <input type="text" class="form-control" id="HOBLI" name="HOBLI" value="<%= values[0].HOBLI %>" placeholder="Hobli">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-group mb-2">
+                      <input type="text" class="form-control" id="VILLAGE" name="VILLAGE" value="<%= values[0].VILLAGE %>" placeholder="Village">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-group mb-2">
+                      <input type="text" class="form-control" id="SURVEYNUMBER" name="SURVEYNUMBER"  value="<%= values[0].SURVEYNUMBER %>" placeholder="Survey Number">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-group mb-2">
+                      <input type="text" class="form-control" id="PDFNAME" name="PDFNAME" value="<%= values[0].PDFNAME %>" placeholder="PDF NAME">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-group mb-2">
+                        <input type="file" class="form-control" name="myfile" >
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                  <input type="submit" ass="btn btn-info btn-block rounded-0 py-2"
+                    class="btn btn-info btn-block rounded-0 py-2" style="width: 100%; color: white; font-weight: 600;">
+                </div>
+              </div>
+ 
+            </div>
+          </form>
+          <!--Form with header-->
+        </div>
+      </div>
+    </div>
+</body>
+
+</html>

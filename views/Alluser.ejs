@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Management</title>
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body style="background-color:lightblue;">
+    <%- include('./public/Navbar.ejs') %>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="text-center mt-5 mb-4">All User Details</h4>
+                    <div class="table-responsive p-4" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+                        <table id="mytable" class="table table-bordred table-striped text-center">
+
+                            <thead>
+                                <th>S.No.</th>
+                                <th>Name</th>
+                                <th>Employee Id</th>
+                                <th>User Id</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </thead>
+                            <tbody>
+
+                                <% data.forEach(function(item){ %>
+                                    <tr>
+                                        <td>
+                                            <%= item.sn %>
+                                        </td>
+                                        <td>
+                                            <%= item.name %>
+                                        </td>
+                                        <td>
+                                            <%= item.empid %>
+                                        </td>
+                                        <td>
+                                            <%= item.userid %>
+                                        </td>
+                                        <td>
+                                            <a href="/edit/<%= item.sn %>">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="/<%= item.sn %>">
+                                                <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </p>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+
+
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Management</title>
+  <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background-color:lightblue;">
+  <%- include('./public/Navbar.ejs') %>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 pb-5">
+          <form action="/edit/<%= values[0].sn %>" method="post">
+            <div class="card border-primary rounded-0"
+              style="border: none; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;">
+              <div class="card-header p-0">
+                <div class="bg-info text-white text-center py-2">
+                  <h3><i class="fa fa-envelope"></i> Edit User</h3>
+                </div>
+              </div>
+              <div class="card-body p-3 mt-3 mb-3">
+
+                <!--Body-->
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="name"
+                      value="<%= values[0].name %>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="empid" name="empid" placeholder="Employee Id"
+                      value="<%= values[0].empid %>">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="userid" name="userid" placeholder="User Id"
+                      value="<%= values[0].userid %>">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="input-group mb-2">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                      value="<%= values[0].password %>">
+                  </div>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="cUser" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Create User
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="updateUser" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Upload User
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="delUser" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Delete User
+                  </label>
+                </div>
+
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="addList" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Add Folder
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="delList" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Delete Folder
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="addEntry" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Add File
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="updateEntry" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Update File
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="mergepdf" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Merge PDF
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="deletentry" value="1" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                     Delete PDF
+                  </label>
+                </div>
+
+                <div class="text-center mt-3">
+                  <input type="submit" value="Update" class="btn btn-info btn-block rounded-0 py-2"
+                    class="btn btn-info btn-block rounded-0 py-2" style="width: 100%; color: white; font-weight: 600;">
+                </div>
+              </div>
+
+            </div>
+          </form>
+          <!--Form with header-->
+        </div>
+      </div>
+    </div>
+</body>
+
+</html>

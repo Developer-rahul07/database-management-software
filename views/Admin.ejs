@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Management</title>
+    <link id="visible" href="../assets/admin.css" rel="stylesheet">
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background-color:lightblue;">
+    <%- include('./public/Navbar.ejs') %>
+        <div class="container">
+            <div class="block p-3">
+                <a class="btn btn-primary m-1" id="visible<%= permission.cUser %>" href="/createuser" role="button"
+                    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">Create
+                    User</a>
+                <a class="btn btn-primary m-1" id="visible<%= permission.updateUser %>" href="/alluser" role="button"
+                    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">Update
+                    User</a>
+                <a class="btn btn-primary m-1" id="visible<%= permission.delUser %>" href="/alluser" role="button"
+                    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">Delete
+                    User</a>
+            </div>
+            <div class="block p-3">
+                <a class="btn btn-primary m-1" id="visible<%= permission.addList %>" href="/list" role="button"
+                    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">Add
+                    folder</a>
+                <a class="btn btn-primary m-1" id="visible<%= permission.delList %>" href="/alllist" role="button"
+                    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">Delete
+                    folder</a>
+                <a class="btn btn-primary m-1" id="visible<%= permission.addEntry %>" href="/addentyInfo" role="button"
+                    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">Add
+                    file</a>
+                <a class="btn btn-primary m-1" id="visible<%= permission.updateEntry %>" href="/excelinfo" role="button"
+                    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">Update
+                    file</a>
+            </div>
+        </div>
+</body>
+
+</html>
