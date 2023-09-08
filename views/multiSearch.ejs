@@ -88,10 +88,11 @@
                 </div>
 
 
-                <div class="table-responsive" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
-                    <table id="mytable" class="table table-bordred table-striped text-center mb-5">
+                <div class="table-responsive" style="box-shadow: rgba(200, 200, 111, 0.2) 0px 7px 29px 0px; ">
+                    <table id="example" class="table table-bordred table-striped text-center mb-5">
 
                         <thead>
+                            <tr>
                             <th>SR NO</th>
                             <th>FILE NAME</th>
                             <th>YEAR</th>
@@ -100,14 +101,22 @@
                             <th>HOBLI</th>
                             <th>VILLAGE</th>
                             <th>SURVEY NUMBER</th>
-                            <th>DELETE</th>
                             <th>VIEW PDF</th>
-                            <th>Add PDF</th>
-                            <!-- <th>Add Comment</th> -->
-                            <!-- <th>View Comment</th> -->
+                        </tr>
                         </thead>
-
                         <tbody>
+                            <tr>
+                                <th>SR NO</th>
+                                <th>FILE NAME</th>
+                                <th>YEAR</th>
+                                <th>CODE</th>
+                                <th>TALUK</th>
+                                <th>HOBLI</th>
+                                <th>VILLAGE</th>
+                                <th>SURVEY NUMBER</th>
+                                <th>VIEW PDF</th> 
+                            </tr>
+
 
                             <% multiSearch.forEach(function(item){ %>
                                 <tr>
@@ -219,59 +228,32 @@
 
 
         <script>
-
-            const searchFun = () => {
-                let commonSearch = document.getElementById('commonSearch').value.toUpperCase();
-
-                console.log("filter is commonSearch ", commonSearch);
-
-
-
-                let myTable = document.getElementById('mytable');
-
-                let tr = myTable.getElementsByTagName('tr');
-                console.log("td is--------------------", tr);
-
-
-                for (let i = 0; i < tr.length; i++) {
-                    let td1 = tr[i].getElementsByTagName('td')[1];
-                    let td2 = tr[i].getElementsByTagName('td')[2];
-                    let td3 = tr[i].getElementsByTagName('td')[3];
-                    let td4 = tr[i].getElementsByTagName('td')[4];
-                    let td5 = tr[i].getElementsByTagName('td')[5];
-                    let td6 = tr[i].getElementsByTagName('td')[6];
-                    let td7 = tr[i].getElementsByTagName('td')[7];
-
-                    console.log("td1 is--------------------", td1);
-                    console.log("td2 is--------------------", td2);
-                    console.log("td3 is--------------------", td3);
-                    console.log("td4 is--------------------", td4);
-                    console.log("td5 is--------------------", td5);
-                    console.log("td6 is--------------------", td6);
-                    console.log("td7 is--------------------", td7);
-
-                    if (td1 || td2 || td3 || td4 || td5 || td6 || td7) {
-                        let textValues = [
-                            td1?.textContent || td1?.innerHTML,
-                            td2?.textContent || td2?.innerHTML,
-                            td3?.textContent || td3?.innerHTML,
-                            td4?.textContent || td4?.innerHTML,
-                            td5?.textContent || td5?.innerHTML,
-                            td6?.textContent || td6?.innerHTML,
-                            td7?.textContent || td7?.innerHTML
-                        ];
-
-                        let matchFound = textValues.some(value =>
-                            value.toUpperCase().indexOf(commonSearch) > -1
-                        );
-
-                        tr[i].style.display = matchFound ? "" : "none";
-                    }
-                }
-            }
-
+            $(document).ready(function() {
+            // Setup - add a text input to each footer cell
+            $('table#example thead th').each( function (i) {
+                var title = $('#example thead th').eq( $(this).index() ).text();
+                $(this).html( '<input type="text" placeholder="'+title+'" data-index="'+i+'" />' );
+            } );
+          
+            // DataTable
+            var table = $('#example').DataTable( {
+                scrollY:        "300px",
+                scrollX:        true,
+                scrollCollapse: true,
+                paging:         false,
+                fixedColumns:   true
+            } );
+         
+            // Filter event handler
+            $( table.table().container() ).on( 'keyup', 'thead input', function () {
+                table
+                    .column( $(this).data('index') )
+                    .search( this.value )
+                    .draw();
+            } );
+        } );
         </script>
-
+        
 
 </body>
 

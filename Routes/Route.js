@@ -47,9 +47,9 @@ router.get('/addentyInfo', userController.addentryData)
 router.post('/addenty', upload.single('myfile'), userController.addEntrydata);
 
 // delete entry get
-router.get('/deleteInfo/:SRNO', userController.deleteInfo);
+router.post('/deleteInfo', userController.deleteInfo);
 // delete entry post
-router.post('/deleteInfo', userController.deleteEntry);
+
 
 // update user from registered user get route
 router.get('/allsearch/:sn', userController.getupdateallsearch);

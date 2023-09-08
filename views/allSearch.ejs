@@ -22,211 +22,171 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <style>
-        #multiSearchButton {
-            background-color: #40a4f7;
-        }
 
-        #multiSearchButton:hover {
-            background-color: #0988f0;
-        }
-    </style>
+    <link href="/assets/table1.css" rel="stylesheet">
+    <link href="/assets/table2.css" rel="stylesheet">
+
+
+
+    <script src="/assets/tablelink.js"></script>
+    <script src="/assets/tablelink1.js"></script>
+
 </head>
 
 <body style="background-color:lightblue;">
     <%- include('./public/Navbar.ejs') %>
-        <div class="refersh">
-            <i class="fa fa-refresh" onclick="pageRefersh()"
-                style="font-size:30px; position: absolute; bottom:50%; right: 0px; background-color: rgb(235, 224, 246); padding: 10px; position: fixed;"></i>
-        </div>
-        <div class="section mt-5">
-            <div class="container mt-5">
-                <form action="/multiSearch" method="post">
-                    <div class="row text-center" style="justify-content: center;">
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputFileName" name="inputFileName" placeholder="Enter FILENAME ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputYear" name="inputYear" placeholder="Enter YEAR ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputCode" name="inputCode" placeholder="Enter CODE ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputTaluk" name="inputTaluk" placeholder="Enter TALUK ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputHobli" name="inputHobli" placeholder="Enter HOBLI ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputVillage" name="inputVillage" placeholder="Enter VILLAGE ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputSurveyNumber" name="inputSurveyNumber"
-                                placeholder="Enter SURVEY NUMBER ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <input type="hidden" id="indexName" name="indexName" value="<%= indexName %>">
+        <!--Display the links to the pages-->
+        <% if(page> 1) { %> <a href="/allsearch?page=<%=page-1%>">Before</a>
+            <% } %>
+                <% for(let i=iterator; i <=endingLink; i++) { %>
+                    <% if(i===page) { %>
+                        <a class="selectedLink" href="/allsearch?page=<%=i%>">
+                            <%=i%>
+                        </a>
+                        <% continue; %>
+                            <% } %>
+                                <a href="/allsearch?page=<%=i%>">
+                                    <%=i%>
+                                </a>
+                                <% } %>
+                                    <% if(page < numberOfPages) { %> <a href="/allsearch?page=<%=page+1%>">After</a>
+                                        <% } %>
 
+                                            <br>
 
-                        <button type="submit" class="filter-btn btn-block " id="multiSearchButton" style="
-                        border: 2px solid black;
-                        border-radius: 25px;height: 40px;
-    width: 550px;font-size: 22px;">
-                            Search
-                        </button><br><br>
-                    </div>
-                </form><br><br>
+                                            <div class="table-responsive">
+                                                <table id="example"
+                                                    class="table table-bordred table-striped text-center mb-5">
 
-                <div class="row text-center" style="justify-content: center;">
-                    <div class="search-box col-lg-3 mb-5">
-                        <input type="text" id="commonSearch" placeholder="Common Search..." onkeyup="searchFun()"
-                            style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;width: 200px;">
-                    </div>
-                </div>
+                                                    <thead>
+                                                        <tr>
 
+                                                            <th>FILE NAME</th>
+                                                            <th>YEAR</th>
+                                                            <th>CODE</th>
+                                                            <th>TALUK</th>
+                                                            <th>HOBLI</th>
+                                                            <th>VILLAGE</th>
+                                                            <th>SURVEY NUMBER</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% console.log("Data in EJS:", data); %>
+                                                            <% data.forEach(function(item){ %>
 
-                <div class="table-responsive"
-                    style="box-shadow: rgba(200, 200, 111, 0.2) 0px 7px 29px 0px; height: 700px; overflow: auto;margin-top: 20px;">
-                    <table id="mytable" class="table table-bordred table-striped text-center mb-5">
+                                                                <%= item.FILENAME %>
+                                                                    <tr>
 
-                        <thead>
-                            <th>SR NO</th>
-                            <th>FILE NAME</th>
-                            <th>YEAR</th>
-                            <th>CODE</th>
-                            <th>TALUK</th>
-                            <th>HOBLI</th>
-                            <th>VILLAGE</th>
-                            <th>SURVEY NUMBER</th>
-                            <th>VIEW PDF</th>
-                        </thead>
-                        <tbody>
+                                                                        <td>
+                                                                            <%= item.FILENAME %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= item.YEAR %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= item.CODE %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= item.TALUK %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= item.HOBLI %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= item.VILLAGE %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= item.SURVEYNUMBER %>
+                                                                        </td>
 
-                            <% listviewpage.forEach(function(item){ %>
-                                <tr>
-                                    <td>
-                                        <%= item.SRNO %>
-                                    </td>
-                                    <td>
-                                        <%= item.FILENAME %>
-                                    </td>
-                                    <td>
-                                        <%= item.YEAR %>
-                                    </td>
-                                    <td>
-                                        <%= item.CODE %>
-                                    </td>
-                                    <td>
-                                        <%= item.TALUK %>
-                                    </td>
-                                    <td>
-                                        <%= item.HOBLI %>
-                                    </td>
-                                    <td>
-                                        <%= item.VILLAGE %>
-                                    </td>
-                                    <td>
-                                        <%= item.SURVEYNUMBER %>
-                                    </td>
+                                                                        <td>
+                                                                            <!-- Button to Open the Modal -->
 
-                                    <td>
-                                        <!-- Button to Open the Modal -->
-
-                                        <form action="/pdfListview/:PDFNAME" method="get">
-                                            <input type="hidden" id="SRNO" name="SRNO" value="<%= item.SRNO %>">
-                                            <input type="hidden" id="FILENAME" name="FILENAME"
-                                                value="<%= item.FILENAME %>">
-                                            <input type="hidden" id="YEAR" name="YEAR" value="<%= item.YEAR %>">
-                                            <input type="hidden" id="CODE" name="CODE" value="<%= item.CODE %>">
-                                            <input type="hidden" id="TALUK" name="TALUK" value="<%= item.TALUK %>">
-                                            <input type="hidden" id="HOBLI" name="HOBLI" value="<%= item.HOBLI %>">
-                                            <input type="hidden" id="VILLAGE" name="VILLAGE"
-                                                value="<%= item.VILLAGE %>">
-                                            <input type="hidden" id="SURVEYNUMBER" name="SURVEYNUMBER"
-                                                value="<%= item.SURVEYNUMBER %>">
-                                            <input type="hidden" id="pdfname" name="pdfname"
-                                                value="<%= item.PDFNAME %>">
-                                            <input type="hidden" id="comment" name="comment"
-                                                value="<%= item.COMMENT %>">
-                                            <input type="hidden" id="indexName" name="indexName"
-                                                value="<%= item.listName %>">
-
-                                            <!-- <input type="submit" <i class="fa fa-eye"></i> > -->
-                                            <button style="background: bottom;
+                                                                            <form action="/pdf/:PDFNAME" method="get">
+                                                                                <input type="hidden" id="SRNO"
+                                                                                    name="SRNO"
+                                                                                    value="<%= item.SRNO %>">
+                                                                                <input type="hidden" id="FILENAME"
+                                                                                    name="FILENAME"
+                                                                                    value="<%= item.FILENAME %>">
+                                                                                <input type="hidden" id="YEAR"
+                                                                                    name="YEAR"
+                                                                                    value="<%= item.YEAR %>">
+                                                                                <input type="hidden" id="CODE"
+                                                                                    name="CODE"
+                                                                                    value="<%= item.CODE %>">
+                                                                                <input type="hidden" id="TALUK"
+                                                                                    name="TALUK"
+                                                                                    value="<%= item.TALUK %>">
+                                                                                <input type="hidden" id="HOBLI"
+                                                                                    name="HOBLI"
+                                                                                    value="<%= item.HOBLI %>">
+                                                                                <input type="hidden" id="VILLAGE"
+                                                                                    name="VILLAGE"
+                                                                                    value="<%= item.VILLAGE %>">
+                                                                                <input type="hidden" id="SURVEYNUMBER"
+                                                                                    name="SURVEYNUMBER"
+                                                                                    value="<%= item.SURVEYNUMBER %>">
+                                                                                <input type="hidden" id="pdfname"
+                                                                                    name="pdfname"
+                                                                                    value="<%= item.PDFNAME %>">
+                                                                                <input type="hidden" id="comment"
+                                                                                    name="comment"
+                                                                                    value="<%= item.COMMENT %>">
+                                                                                <input type="hidden" id="indexName"
+                                                                                    name="indexName"
+                                                                                    value="<%= item.listName %>">
+                                                                                <input type="hidden" id="listName"
+                                                                                    name="listName"
+                                                                                    value="<%= item.listName %>">
+                                                                                <!-- <input type="submit" <i class="fa fa-eye"></i> > -->
+                                                                                <button style="background: bottom;
                                             border: aliceblue;
                                             color: black;"> <i class="fa fa-eye"></i></button>
 
-                                        </form>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-                <br><br>
-            </div>
-        </div>
-
-        <script>
-
-            const searchFun = () => {
-                let commonSearch = document.getElementById('commonSearch').value.toUpperCase();
-
-                console.log("filter is commonSearch ", commonSearch);
+                                                                            </form>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <% }) %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <%- include('./public/Navbar.ejs') %>
+                                                <br>
 
 
 
-                let myTable = document.getElementById('mytable');
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        // Setup - add a text input to each footer cell
+                                                        $('table#example thead th').each(function (i) {
+                                                            var title = $('#example thead th').eq($(this).index()).text();
+                                                            $(this).html('<input type="text" id="filenameInput" placeholder="' + title + '" data-index="' + i + '" />');
+                                                        });
 
-                let tr = myTable.getElementsByTagName('tr');
-                console.log("td is--------------------", tr);
+                                                        // DataTable
+                                                        var table = $('#example').DataTable({
+                                                            scrollY: "300px",
+                                                            scrollX: true,
+                                                            scrollCollapse: true,
+                                                            paging: false,
+                                                            fixedColumns: true
+                                                        });
 
+                                                        // Filter event handler
+                                                        $(table.table().container()).on('keyup', 'thead input', function () {
+                                                            let searchTerm = $('#filenameInput').val();
 
-                for (let i = 0; i < tr.length; i++) {
-                    let td1 = tr[i].getElementsByTagName('td')[1];
-                    let td2 = tr[i].getElementsByTagName('td')[2];
-                    let td3 = tr[i].getElementsByTagName('td')[3];
-                    let td4 = tr[i].getElementsByTagName('td')[4];
-                    let td5 = tr[i].getElementsByTagName('td')[5];
-                    let td6 = tr[i].getElementsByTagName('td')[6];
-                    let td7 = tr[i].getElementsByTagName('td')[7];
-
-                    console.log("td1 is--------------------", td1);
-                    console.log("td2 is--------------------", td2);
-                    console.log("td3 is--------------------", td3);
-                    console.log("td4 is--------------------", td4);
-                    console.log("td5 is--------------------", td5);
-                    console.log("td6 is--------------------", td6);
-                    console.log("td7 is--------------------", td7);
-
-                    if (td1 || td2 || td3 || td4 || td5 || td6 || td7) {
-                        let textValues = [
-                            td1?.textContent || td1?.innerHTML,
-                            td2?.textContent || td2?.innerHTML,
-                            td3?.textContent || td3?.innerHTML,
-                            td4?.textContent || td4?.innerHTML,
-                            td5?.textContent || td5?.innerHTML,
-                            td6?.textContent || td6?.innerHTML,
-                            td7?.textContent || td7?.innerHTML
-                        ];
-
-                        let matchFound = textValues.some(value =>
-                            value.toUpperCase().indexOf(commonSearch) > -1
-                        );
-
-                        tr[i].style.display = matchFound ? "" : "none";
-                    }
-                }
-            }
-
-        </script>
+                                                            // Make an HTTP request to the server for database search
+                                                            $.get('/allsearch', { searchTerm: searchTerm })
+                                                            table
+                                                                .column($(this).data('index'))
+                                                                .search(this.value)
+                                                                .draw();
+                                                        });
+                                                    });
+                                                </script>
 
 
 </body>

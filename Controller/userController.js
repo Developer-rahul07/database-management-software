@@ -4,7 +4,6 @@ const { writeFileSync, readFileSync } = require("fs");
 var jwt = require('jsonwebtoken');
 var address = require('address');
 var alert = require('alert');
-const path = require('path');
 const dotenv = require('dotenv')
 dotenv.config();
 
@@ -106,51 +105,209 @@ const multiSearch = async (req, res) => {
     }
 };
 
-const allsearch = async (req, res) => {
-    const indexName = req.body.indexName;
-    const indexNam = req.query.indexName;
-    console.log("allsearch indemane-===================", indexName);
-    console.log("allsearch -===================", indexNam);
 
-    try {
-        // Get list of tables
-        const rows = await new Promise((resolve, reject) => {
-            db.all(`SELECT * FROM List`, (error, rows) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(rows);
+
+// const allsearch = async (req, res, next) => {
+//     db.all("SELECT * FROM alldata", function (err, rows) {
+//         if (err) {
+//             console.log(err);
+//         }
+//         // console.log(rows);
+//         res.render('allSearch', { data: rows })
+//         // res.status(200).json(rows);
+//     });
+// }
+
+
+const allsearch = async (req, res) => {
+
+    // if (req.query.searchTerm) {
+    if (true) {
+        // const searchTerm = req.query.searchTerm;
+        const searchTerm = "A2CR2/60-61";
+        console.log("searchTerm=========", searchTerm);
+
+        // Perform the database query for search
+        db.all('SELECT * FROM alldata WHERE FILENAME = ?', [searchTerm], (err, rows) => {
+            console.log("rowasssss----", rows.length)
+            // console.log("rowasssss----", rows)
+            if (err) {
+                console.log("Error:", err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            if (req.query.json === 'true') {
+                res.json(rows);
+            } else {
+                res.render('allsearch', { data: rows, page: 10, iterator: 10, endingLink: 10, numberOfPages: 10 });
+            }
+            console.log("insdie iffffffffffffffffffffff");
+
+        });
+    } else {
+        console.log("insdie elseeeeeeeeeeeeeeeeeeeeeeeeeee");
+        // Pagination without search
+        const resultsPerPage = 100;
+        db.all('SELECT * FROM alldata', (error, rows) => {
+            if (error) {
+                console.log("Error:", error);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+
+            const numOfResults = rows.length;
+            const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
+            let page = req.query.page ? Number(req.query.page) : 1;
+
+            // Ensure valid page number
+            if (page > numberOfPages) {
+                return res.redirect('/?page=' + encodeURIComponent(numberOfPages));
+            } else if (page < 1) {
+                return res.redirect('/?page=' + encodeURIComponent('1'));
+            }
+
+            // Determine SQL LIMIT starting number
+            const startingLimit = (page - 1) * resultsPerPage;
+
+            // Get relevant records for the current page
+            const sql = `SELECT * FROM alldata LIMIT ${startingLimit},${resultsPerPage}`;
+            db.all(sql, (err, result) => {
+                if (err) {
+                    console.log("Error:", err);
+                    return res.status(500).json({ error: 'Internal server error' });
                 }
+
+                const iterator = Math.max(1, page - 5);
+                const endingLink = Math.min(iterator + 9, numberOfPages);
+
+                console.log(numberOfPages);
+                res.render('allsearch', { data: result, page, iterator, endingLink, numberOfPages });
             });
         });
-
-        // console.log("allsearch rows-===================", rows);
-
-
-        // Collect rows from all tables
-        const tableRows = await Promise.all(rows.map((row) => {
-            const tableName = row.name;
-            return new Promise((resolve, reject) => {
-                db.all(`SELECT * FROM ${tableName}`, (error, rows) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(rows);
-                    }
-                });
-            });
-        }));
-        // console.log("allsearch tableRows-===================", tableRows);
-
-        // Combine all rows and render template
-        const listviewpage = [].concat(...tableRows);
-
-        res.render('allSearch', { listviewpage, indexName });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal server error');
     }
+
+
+
+
+
+
+    // const indexName = req.body.indexName;
+    // console.log("allsearch indemane-===================", indexName);
+
+    // try {
+    //     // Get list of tables
+    //     const rows = await new Promise((resolve, reject) => {
+    //         db.all(`SELECT * FROM List`, (error, rows) => {
+    //             if (error) {
+    //                 reject(error);
+    //             } else {
+    //                 resolve(rows);
+    //             }
+    //         });
+    //     });
+
+    // console.log("allsearch rows-===================", rows);
+
+
+    // // Collect rows from all tables
+    // const tableRows = await Promise.all(rows.map((row) => {
+    //     const tableName = row.name;
+    //     return new Promise((resolve, reject) => {
+    //         db.all(`SELECT * FROM ${tableName}`, (error, rows) => {
+    //             if (error) {
+    //                 reject(error);
+    //             } else {
+    //                 resolve(rows);
+    //             }
+    //         });
+    //     });
+    // }));
+    // // console.log("allsearch tableRows-===================", tableRows);
+
+    // // Combine all rows and render template
+    // const listviewpage = [].concat(...tableRows);
+
+    // if (req.query.searchTerm) {
+
+    //     const searchTerm = req.query.searchTerm; // Get the search term from the client
+    //     console.log("searchTerm insiisiisisi========", searchTerm);
+
+    //     // Perform the database query
+    //     db.all('SELECT * FROM alldata WHERE FILENAME LIKE ?', [`%${searchTerm}%`], (err, row) => {
+    //         if (err) {
+    //             console.log("Error:", err);
+    //             res.status(500).json({ error: 'Internal server error' });
+    //         }
+
+    //         const resultsPerPage = 100;
+    //         const numOfResults = row.length;
+    //         const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
+    //         let page = req.query.page ? Number(req.query.page) : 1;
+    //         if (page > numberOfPages) {
+    //             res.redirect('/?page=' + encodeURIComponent(numberOfPages));
+    //         } else if (page < 1) {
+    //             res.redirect('/?page=' + encodeURIComponent('1'));
+    //         }
+    //         //Determine the SQL LIMIT starting number
+    //         const startingLimit = (page - 1) * resultsPerPage;
+    //         //Get the relevant number of POSTS for this starting page
+    //         sql = `SELECT * FROM alldata LIMIT ${startingLimit},${resultsPerPage}`;
+    //         db.all(sql, (err, result) => {
+    //             if (err) throw err;
+    //             let iterator = (page - 5) < 1 ? 1 : page - 5;
+    //             let endingLink = (iterator + 9) <= numberOfPages ? (iterator + 9) : page + (numberOfPages - page);
+    //             if (endingLink < (page + 4)) {
+    //                 iterator -= (page + 4) - numberOfPages;
+    //             }
+    //             console.log(numberOfPages);
+    //             res.render('allsearch', { data: result, page, iterator, endingLink, numberOfPages });
+    //         });
+
+    //     });
+    //     return;
+    // }
+
+
+    // // /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // const resultsPerPage = 100;
+    // db.all(`SELECT * FROM alldata`, (error, row) => {
+    //     // console.log("listview page row-----", row);
+
+
+    //     if (error) {
+    //         console.log("erorrrr in table--userController----", error);
+    //     }
+    //     const numOfResults = row.length;
+    //     const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
+    //     let page = req.query.page ? Number(req.query.page) : 1;
+    //     if (page > numberOfPages) {
+    //         res.redirect('/?page=' + encodeURIComponent(numberOfPages));
+    //     } else if (page < 1) {
+    //         res.redirect('/?page=' + encodeURIComponent('1'));
+    //     }
+    //     //Determine the SQL LIMIT starting number
+    //     const startingLimit = (page - 1) * resultsPerPage;
+    //     //Get the relevant number of POSTS for this starting page
+    //     sql = `SELECT * FROM alldata LIMIT ${startingLimit},${resultsPerPage}`;
+    //     db.all(sql, (err, result) => {
+    //         if (err) throw err;
+    //         let iterator = (page - 5) < 1 ? 1 : page - 5;
+    //         let endingLink = (iterator + 9) <= numberOfPages ? (iterator + 9) : page + (numberOfPages - page);
+    //         if (endingLink < (page + 4)) {
+    //             iterator -= (page + 4) - numberOfPages;
+    //         }
+    //         console.log(numberOfPages);
+    //         res.render('allsearch', { data: result, page, iterator, endingLink, numberOfPages });
+    //     });
+    // });
 };
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//         res.render('allSearch', { listviewpage, indexName });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Internal server error');
+//     }
+// };
 
 
 
@@ -268,10 +425,9 @@ const listviewpage = (req, res) => {
     var data = req.userData;
 
     console.log(data);
-
     //getting data from List table
     db.all(`SELECT * FROM ${indexName}`, (error, row) => {
-        console.log("listview page row-----", row);
+        // console.log("listview page row-----", row);
 
 
         if (error) {
@@ -285,15 +441,6 @@ const listviewpage = (req, res) => {
 
 
 const pdfView = (req, res) => {
-
-
-
-    // Constructing the path to the PDF folder in Volume D
-    const pdfFolderPath = path.join('D:', 'path', 'pdf', "HCPR115-65-66.pdf");
-    console.log("-=============", pdfFolderPath);
-
-
-
     // var name = req.params.PDFNAME;
     var SRNO = req.query.SRNO;
     var FILENAME = req.query.FILENAME;
@@ -307,7 +454,7 @@ const pdfView = (req, res) => {
     var comment = req.query.comment;
     var msg = req.query.msg;
     // var indexName = req.query.indexName;
-    var indexName = req.query.TALUK;
+    var indexName = req.query.listName;
     console.log("----------------", 'indexName=====', indexName, "TALUK", TALUK, "pdfname-----", pdfname, "comment-----", comment, "=========", SRNO);
     if (msg && indexName) {
 
@@ -327,9 +474,10 @@ const pdfView = (req, res) => {
     db.all(`SELECT * FROM ${indexName} WHERE SRNO = ?`, [SRNO], (err, row) => {
         // console.log("row is---------------", row);
 
-        res.render('pdfView', { SRNO, FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, pdfname, comment, indexName, row, pdfFolderPath });
+        res.render('pdfView', { SRNO, FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, pdfname, comment, indexName, row });
     })
 }
+
 
 
 const pdfViewListview = (req, res) => {
@@ -346,12 +494,12 @@ const pdfViewListview = (req, res) => {
     var comment = req.query.comment;
     var msg = req.query.msg;
     // var indexName = req.query.indexName;
-    var indexName = req.query.TALUK;
-    console.log("----------------", 'indexName=====', indexName, "TALUK", TALUK, "pdfname-----", pdfname, "comment-----", comment, "=========", SRNO);
-    if (msg && indexName) {
+    var listName = req.query.listName;
+    console.log("----------------", 'indexName=====', listName, "TALUK", TALUK, "pdfname-----", pdfname, "comment-----", comment, "=========", SRNO);
+    if (msg && listName) {
 
         db.run(
-            `UPDATE ${indexName} SET COMMENT = ? WHERE SRNO = ? `,
+            `UPDATE ${listName} SET COMMENT = ? WHERE SRNO = ? `,
             [msg, SRNO],
             function (error) {
                 if (error) {
@@ -363,12 +511,13 @@ const pdfViewListview = (req, res) => {
         console.log("Comment is not updated at addCommnet!");
     }
 
-    db.all(`SELECT * FROM ${indexName} WHERE SRNO = ?`, [SRNO], (err, row) => {
-        // console.log("row is---------------", row);
+    db.all(`SELECT * FROM ${listName} WHERE SRNO = ?`, [SRNO], (err, row) => {
+        console.log("row is---------------", row);
 
-        res.render('pdfViewListview', { SRNO, FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, pdfname, comment, indexName, row });
+        res.render('pdfViewListview', { SRNO, FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, pdfname, comment, listName, row });
     })
 }
+
 
 const deleteUser = (req, res) => {
 
@@ -470,7 +619,8 @@ const addList = (req, res) => {
               VILLAGE TEXT,
               SURVEYNUMBER TEXT,
               PDFNAME TEXT, 
-              COMMENT TEXT
+              COMMENT TEXT,
+              listName TEXT
             );`
                 );
                 res.redirect('/admin');
@@ -603,8 +753,9 @@ const getLogin = (req, res) => {
         res.render('Login');
     }
     else {
-        res.send("<script>window.close();</script >")
-        alert("System Not Supported Or Please Connect to Internet");
+        // res.send("<script>window.close();</script >")
+        // alert("System Not Supported Or Please Connect to Internet");
+        res.render('Login');
     }
 }
 
@@ -719,7 +870,7 @@ const addEntrydata = (req, res) => {
 
 
 
-    db.run(`INSERT INTO ${table}(FILENAME,YEAR,CODE,TALUK,HOBLI,VILLAGE,SURVEYNUMBER,PDFNAME,COMMENT) VALUES(?,?,?,?,?,?,?,?,'No Comment')`, [FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, PDFNAME], function (err) {
+    db.run(`INSERT INTO ${table}(FILENAME,YEAR,CODE,TALUK,HOBLI,VILLAGE,SURVEYNUMBER,PDFNAME,COMMENT,listName) VALUES(?,?,?,?,?,?,?,?,'No Comment',?)`, [FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, PDFNAME, table], function (err) {
         if (err) {
             console.log(err.message);
         }
@@ -757,30 +908,31 @@ const addentryData = (req, res) => {
 }
 
 const deleteInfo = (req, res) => {
-
-    var index = req.params.SRNO;
-
-    db.all("SELECT * FROM List", function (err, rows) {
-        if (err) {
-            console.log(err);
-        }
-        // console.log(rows);
-        res.render('DeleteEntryinfo', { values: rows, index: index })
-    });
-}
-
-const deleteEntry = (req, res) => {
-
-    const table = req.body.tableName;
-    const id = req.body.index;
-
-    // console.log(table + " " + id);
-
-    db.run(`DELETE FROM ${table} WHERE SRNO = ?`, [id], function (error) {
+    var id = req.body.SRNO;
+    var indexName = req.body.indexName;
+    var data = req.userData;
+    //  var mergePdf ='1';
+    console.log(indexName);
+    db.run(`DELETE FROM ${indexName} WHERE SRNO = ?`, [id], function (error) {
         if (error) {
             console.error(error.message);
         }
-        res.redirect('/admin');
+
+
+        console.log(data);
+
+        //getting data from List table
+        db.all(`SELECT * FROM ${indexName}`, (error, row) => {
+            // console.log("listview page row-----", row);
+
+
+            if (error) {
+                console.log("erorrrr in table--userController----", error);
+            }
+            // console.log("listviewpage row is-------",row);
+            res.render('listviewpage', { listviewpage: row, permission: 1, indexName })
+
+        });
     });
 
 }
@@ -813,18 +965,19 @@ const mergePdf = async (req, res) => {
     res.redirect('/admin')
 }
 
-const commentInfo = (req, res) => {
+const
+    commentInfo = (req, res) => {
 
-    var index = req.params.SRNO;
+        var index = req.params.SRNO;
 
-    db.all("SELECT * FROM List", function (err, rows) {
-        if (err) {
-            console.log(err);
-        }
-        // console.log(rows);
-        res.render('AddComment', { values: rows, index: index })
-    });
-}
+        db.all("SELECT * FROM List", function (err, rows) {
+            if (err) {
+                console.log(err);
+            }
+            // console.log(rows);
+            res.render('AddComment', { values: rows, index: index })
+        });
+    }
 
 const addcommentInfo = (req, res) => {
 
@@ -835,6 +988,7 @@ const addcommentInfo = (req, res) => {
         if (error) {
             console.error(error.message);
         }
+        console.log(row);
         res.render('ListComment', { item: row, table: table, index: index })
     });
 }
@@ -882,7 +1036,7 @@ exports.addEntrydata = addEntrydata;
 exports.excelInfo = excelInfo;
 exports.addentryData = addentryData;
 exports.deleteInfo = deleteInfo;
-exports.deleteEntry = deleteEntry;
+
 exports.getLogin = getLogin;
 exports.uploadPdf = uploadPdf
 exports.mergePdf = mergePdf;

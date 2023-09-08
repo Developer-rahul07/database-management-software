@@ -22,102 +22,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <style>
-        #visible0 {
-            opacity: 0.5;
-            pointer-events: none;
-        }
 
-        #multiSearchButton {
-            background-color: #40a4f7;
-        }
-
-        #multiSearchButton:hover {
-            background-color: #0988f0;
-        }
-    </style>
+        <link href="/assets/table1.css"  rel="stylesheet">
+        <link href="/assets/table2.css" rel="stylesheet" >
+    
+     
+    
+        <script src="/assets/tablelink.js" ></script>
+        <script src="/assets/tablelink1.js"></script>
 </head>
 
 <body style="background-color:lightblue;">
     <%- include('./public/Navbar.ejs') %>
-        <div class="section">
-            <div class="container">
-                <form action="/multiSearch" method="post">
-                    <div class="row text-center" style="justify-content: center;">
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputFileName" name="inputFileName" placeholder="Enter FILENAME ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputYear" name="inputYear" placeholder="Enter YEAR ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputCode" name="inputCode" placeholder="Enter CODE ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputTaluk" name="inputTaluk" placeholder="Enter TALUK ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputHobli" name="inputHobli" placeholder="Enter HOBLI ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputVillage" name="inputVillage" placeholder="Enter VILLAGE ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <div class="search-box col-lg-3 mb-5">
-                            <input type="text" id="inputSurveyNumber" name="inputSurveyNumber"
-                                placeholder="Enter SURVEY NUMBER ..."
-                                style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; width: 200px;">
-                        </div>
-                        <input type="hidden" id="indexName" name="indexName" value="<%= indexName %>">
+        <br>
 
+    <div class="table-responsive" >
+        <table id="example" class="table table-bordred table-striped text-center mb-5">
 
-                        <button type="submit" class="filter-btn btn-block" id="multiSearchButton" style="  
-                        border: 2px solid black;
-                        border-radius: 25px;height: 40px;
-    width: 550px;font-size: 22px;">
-                            Search
-                        </button><br><br>
-                    </div>
-                </form><br><br>
-
-                <div class="row text-center" style="justify-content: center;">
-                    <div class="search-box col-lg-3 mb-5">
-                        <input type="text" id="commonSearch" placeholder="Common Search..." onkeyup="searchFun()"
-                            style="padding: 15px; width: 40%; background-color: rgb(233, 240, 252); border: none; outline: none; border-radius: 5px; box-shadow:4rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;width: 200px;">
-                    </div>
-                </div>
-
-
-                <div class="table-responsive" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
-                    <table id="mytable" class="table table-bordred table-striped text-center mb-5">
-
-                        <thead>
-                            <th>SR NO</th>
-                            <th>FILE NAME</th>
-                            <th>YEAR</th>
-                            <th>CODE</th>
-                            <th>TALUK</th>
-                            <th>HOBLI</th>
-                            <th>VILLAGE</th>
-                            <th>SURVEY NUMBER</th>
-                            <th>DELETE</th>
-                            <th>VIEW PDF</th>
-                            <th>Add PDF</th>
-                            <!-- <th>Add Comment</th> -->
-                            <!-- <th>View Comment</th> -->
-                        </thead>
+            <thead>
+                <tr>
+                
+                <th>FILE NAME</th>
+                <th>YEAR</th>
+                <th>CODE</th>
+                <th>TALUK</th>
+                <th>HOBLI</th>
+                <th>VILLAGE</th>
+                <th>SURVEY NUMBER</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
                         <tbody>
 
                             <% listviewpage.forEach(function(item){ %>
                                 <tr>
-                                    <td>
-                                        <%= item.SRNO %>
-                                    </td>
+                                    
                                     <td>
                                         <%= item.FILENAME %>
                                     </td>
@@ -140,16 +81,26 @@
                                         <%= item.SURVEYNUMBER %>
                                     </td>
                                     <td>
+                                        <form action="/deleteInfo"  method="post">
+                                            <input type="hidden" id="SRNO" name="SRNO" value="<%= item.SRNO %>">
+                                           
+                                                <!-- <input type="hidden" id="listName" name="listName"
+                                                value="<%= item.listName %>"> -->
+                                                <input type="hidden" id="indexName" name="indexName"
+                                                value="<%= indexName %>">
+                                                
+                                                   <button style="background: bottom;
+                                            border: aliceblue;
+                                            color: black;"  id="visible<%= permission.deleteEntry %>" > <i class="fa fa-trash"></i></button>
 
-                                        <a id="visible<%= permission.deleteEntry %>"
-                                            href="/deleteInfo/<%= item.SRNO %>">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
+                                           
+                                        </form>
+                                      
                                     </td>
                                     <td>
-                                        <!-- Button to Open the Modal -->
+                                   
 
-                                        <form action="/pdf/:PDFNAME" method="get">
+                                        <form action="pdfListview/:PDFNAME" method="get">
                                             <input type="hidden" id="SRNO" name="SRNO" value="<%= item.SRNO %>">
                                             <input type="hidden" id="FILENAME" name="FILENAME"
                                                 value="<%= item.FILENAME %>">
@@ -167,7 +118,8 @@
                                                 value="<%= item.COMMENT %>">
                                             <input type="hidden" id="indexName" name="indexName"
                                                 value="<%= indexName %>">
-
+                                                <input type="hidden" id="listName" name="listName"
+                                                value="<%= item.listName %>">
                                             <!-- <input type="submit" <i class="fa fa-eye"></i> > -->
                                             <button style="background: bottom;
                                             border: aliceblue;
@@ -175,9 +127,7 @@
 
                                         </form>
 
-                                        <!-- <a href="/pdf/<%= item.PDFNAME %>">
-                                            <i class="fa fa-eye"></i>
-                                        </a> -->
+                                      
                                     </td>
                                     <td>
 
@@ -185,14 +135,7 @@
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     </td>
-                                    <!-- <td>
-                                        <a href="/commentinfo/<%= item.SRNO %>">
-                                            <i class="fa fa-plus"></i>
-                                        </a>
-                                    </td> -->
-                                    <!-- <td>
-                                        <i class="fa fa-eye" style="color: blue;" data-toggle="modal" data-target="#exampleModal"></i>
-
+                                  
                                         <!-- Modal -->
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -218,62 +161,34 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-
-        <script>
-
-            const searchFun = () => {
-                let commonSearch = document.getElementById('commonSearch').value.toUpperCase();
-
-                console.log("filter is commonSearch ", commonSearch);
-
-
-
-                let myTable = document.getElementById('mytable');
-
-                let tr = myTable.getElementsByTagName('tr');
-                console.log("td is--------------------", tr);
-
-
-                for (let i = 0; i < tr.length; i++) {
-                    let td1 = tr[i].getElementsByTagName('td')[1];
-                    let td2 = tr[i].getElementsByTagName('td')[2];
-                    let td3 = tr[i].getElementsByTagName('td')[3];
-                    let td4 = tr[i].getElementsByTagName('td')[4];
-                    let td5 = tr[i].getElementsByTagName('td')[5];
-                    let td6 = tr[i].getElementsByTagName('td')[6];
-                    let td7 = tr[i].getElementsByTagName('td')[7];
-
-                    console.log("td1 is--------------------", td1);
-                    console.log("td2 is--------------------", td2);
-                    console.log("td3 is--------------------", td3);
-                    console.log("td4 is--------------------", td4);
-                    console.log("td5 is--------------------", td5);
-                    console.log("td6 is--------------------", td6);
-                    console.log("td7 is--------------------", td7);
-
-                    if (td1 || td2 || td3 || td4 || td5 || td6 || td7) {
-                        let textValues = [
-                            td1?.textContent || td1?.innerHTML,
-                            td2?.textContent || td2?.innerHTML,
-                            td3?.textContent || td3?.innerHTML,
-                            td4?.textContent || td4?.innerHTML,
-                            td5?.textContent || td5?.innerHTML,
-                            td6?.textContent || td6?.innerHTML,
-                            td7?.textContent || td7?.innerHTML
-                        ];
-
-                        let matchFound = textValues.some(value =>
-                            value.toUpperCase().indexOf(commonSearch) > -1
-                        );
-
-                        tr[i].style.display = matchFound ? "" : "none";
-                    }
-                }
-            }
-
-        </script>
+            
+                <script>
+                    $(document).ready(function() {
+                    // Setup - add a text input to each footer cell
+                    $('table#example thead th').each( function (i) {
+                        var title = $('#example thead th').eq( $(this).index() ).text();
+                        $(this).html( '<input type="text" placeholder="'+title+'" data-index="'+i+'" />' );
+                    } );
+                  
+                    // DataTable
+                    var table = $('#example').DataTable( {
+                        scrollY:        "360px",
+                        scrollX:        true,
+                        scrollCollapse: true,
+                        paging:         true,
+                        fixedColumns:   true
+                    } );
+                 
+                    // Filter event handler
+                    $( table.table().container() ).on( 'keyup', 'thead input', function () {
+                        table
+                            .column( $(this).data('index') )
+                            .search( this.value )
+                            .draw();
+                    } );
+                } );
+                </script>
+               
 </body>
 
 </html>

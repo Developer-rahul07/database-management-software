@@ -19,56 +19,122 @@
 <body style="background-color:lightblue;">
     <%- include('./public/Navbar.ejs') %>
         <div class="arrow" style="margin-left: 100px; margin-top: 50px;">
-            <a href="/allsearch"><i class="fa fa-arrow-circle-left" style="font-size:24px;"></i></a>
+            <form action="/listviewpage" method="get" style="display: flex; margin: 10px;">
+            
+            <input type="hidden" id="indexName" name="name" value="<%= listName %>">
+            <button style="background: bottom;
+            border: aliceblue;
+            color: black;"> <i class="fa fa-arrow-circle-left" style="font-size:24px;"></i></button>
+            <!-- <a ><i class="rsfa fa-arrow-circle-left" style="font-size:24px;"></i></a> -->
+        </div>
+       
+            </form>
         </div>
 
-        <div class="comment-form" style="display: flex; justify-content: center;">
-            <form action="/pdfListview/:PDFNAME" method="get" style="display: flex; margin: 10px;">
-                <div class="form-group m-2">
-                    <div class="input-group">
-                        <% row.forEach(function(item){ %>
-                            <input type="text" class="form-control " id="msg" name="msg" value="<%= item.COMMENT %>"
-                                placeholder="Add Message">
-                            <% }) %>
+
+         
+                <div class="row">
+                <div class="col-4">
+                    <br><br>
+                    <div class="comment-form" style="display: flex; ">
+                        <form action="/pdfListview/:PDFNAME" method="get" >
+                            <div class="input-group">
+                                <% row.forEach(function(item){ %>
+                                  <input style="margin-left: 30px; width: 400px;" type="text" class="form-control " id="msg" name="msg" value="<%= item.COMMENT %>" placeholder="Add Message">
+                                  <% }) %>
+                              </div>
+                                <input type="hidden" id="SRNO" name="SRNO" value="<%= SRNO %>">
+                                <input type="hidden" id="FILENAME" name="FILENAME" value="<%= FILENAME %>">
+                                <input type="hidden" id="YEAR" name="YEAR" value="<%= YEAR %>">
+                                <input type="hidden" id="CODE" name="CODE" value="<%= CODE %>">
+                                <input type="hidden" id="TALUK" name="TALUK" value="<%= TALUK %>">
+                                <input type="hidden" id="HOBLI" name="HOBLI" value="<%= HOBLI %>">
+                                <input type="hidden" id="VILLAGE" name="VILLAGE" value="<%= VILLAGE %>">
+                                <input type="hidden" id="SURVEYNUMBER" name="SURVEYNUMBER" value="<%= SURVEYNUMBER %>">
+                                <input type="hidden" id="pdfname" name="pdfname" value="<%= pdfname %>">
+                                <input type="hidden" id="comment" name="comment" value="<%= comment %>">
+                                <% row.forEach(function(item){ %>
+                                <input type="hidden" id="indexName" name="listName" value="<%= item.listName %>">
+                                <% }) %>
+                            </div>
+                            <div class="text-center m-2">
+                                <input type="submit" value="Add Comment" class="btn btn-info btn-block rounded-0"
+                                    style="width: 50%; color: white; font-weight: 600; border-radius: 20px;">
+                            </div>
+                    </form>
+                    
+                    <% row.forEach(function(item){ %>
+            
+                        <div class="card-body ">
+                            <h1 class="text-center ">
+                                <%= item.COMMENT %>
+                            </h1>
+                        
                     </div>
-                    <input type="hidden" id="SRNO" name="SRNO" value="<%= SRNO %>">
-                    <input type="hidden" id="FILENAME" name="FILENAME" value="<%= FILENAME %>">
-                    <input type="hidden" id="YEAR" name="YEAR" value="<%= YEAR %>">
-                    <input type="hidden" id="CODE" name="CODE" value="<%= CODE %>">
-                    <input type="hidden" id="TALUK" name="TALUK" value="<%= TALUK %>">
-                    <input type="hidden" id="HOBLI" name="HOBLI" value="<%= HOBLI %>">
-                    <input type="hidden" id="VILLAGE" name="VILLAGE" value="<%= VILLAGE %>">
-                    <input type="hidden" id="SURVEYNUMBER" name="SURVEYNUMBER" value="<%= SURVEYNUMBER %>">
-                    <input type="hidden" id="pdfname" name="pdfname" value="<%= pdfname %>">
-                    <input type="hidden" id="comment" name="comment" value="<%= comment %>">
-                    <input type="hidden" id="indexName" name="indexName" value="<%= indexName %>">
-                </div>
-                <div class="text-center m-2">
-                    <input type="submit" value="Add Comment" class="btn btn-info btn-block rounded-0"
-                        style="width: 100%; color: white; font-weight: 600; border-radius: 20px;">
-                </div>
-        </div>
-        </form>
-        </div>
+                    <% }) %>
 
-        <!-- <h1><%= SRNO %></h1>
-        <h1><%= YEAR %></h1>
-        <h1><%= pdfname %></h1>
-        <h1><%= comment %></h1>
-        <h1><%= indexName %></h1>    -->
-        <% row.forEach(function(item){ %>
-            <div class="card w-50 h-50 align-items-center  m-auto">
-                <div class="card-body ">
-                    <h1 class="text-center ">
-                        <%= item.COMMENT %>
-                    </h1>
+                    <div class="table-responsive" >
+                        <table id="example" class="table table-bordred table-striped text-center mb-5">
+                
+                          
+                                        <tbody>
+                
+                                            <% row.forEach(function(item){ %>
+                                                <tr>
+                                                    <td>File Name</td>
+                                                    <td>
+                                                        <%= item.FILENAME %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                <td>Year</td>
+                                                    <td>
+                                                        <%= item.YEAR %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                <td>code</td>
+                                                    <td>
+                                                        <%= item.CODE %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Taluka</td>
+                                                    <td>
+                                                        <%= item.TALUK %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Hobali</td>
+                                                    <td>
+                                                        <%= item.HOBLI %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Village</td>
+                                                    <td>
+                                                        <%= item.VILLAGE %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Survey Number</td>
+                                                    <td>
+                                                        <%= item.SURVEYNUMBER %>
+                                                    </td>
+                                                </tr>
+                                                   </tbody>
+                                                   </table>
                 </div>
+              
+        
+    
+       
             </div>
-            <% }) %>
-
-                <div class="container mb-5">
+                <% }) %>
+                <div class="col-8">
                     <iframe src="../assets/pdf/<%= pdfname %>.pdf" width="100%" height="976" type="application/pdf">
-                        <iframe src="../../../" width="100%" height="976" type="application/pdf">
+                        <!-- <iframe src="../.." width="100%" height="976" type="application/pdf"> -->
+                </div>
                 </div>
 </body>
 
