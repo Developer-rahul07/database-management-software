@@ -23,172 +23,215 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
-    <link href="/assets/table1.css" rel="stylesheet">
-    <link href="/assets/table2.css" rel="stylesheet">
+    <style>
+        /* Your CSS styles here */
+        .results-table {
+            width: 100%;
+            /* border-collapse: collapse; */
+        }
 
+        .results-table th,
+        .results-table td {
+            border: 1px solid #0f0101;
+            padding: 8px;
+            text-align: left;
+        }
 
+        .results-table th {
+            font-weight: bold;
+        }
 
-    <script src="/assets/tablelink.js"></script>
-    <script src="/assets/tablelink1.js"></script>
+        #input-field-group {
+            display: flex;
+            justify-content: space-evenly;
+            margin-top: 3%;
+            margin-bottom: 3%;
+        }
+
+        .inputFieldClass {
+            padding: 5px;
+            border: 2px solid rgb(89, 83, 83);
+            border-radius: 5px;
+        }
+    </style>
 
 </head>
 
+
 <body style="background-color:lightblue;">
     <%- include('./public/Navbar.ejs') %>
-        <!--Display the links to the pages-->
-        <% if(page> 1) { %> <a href="/allsearch?page=<%=page-1%>">Before</a>
-            <% } %>
-                <% for(let i=iterator; i <=endingLink; i++) { %>
-                    <% if(i===page) { %>
-                        <a class="selectedLink" href="/allsearch?page=<%=i%>">
-                            <%=i%>
-                        </a>
-                        <% continue; %>
-                            <% } %>
-                                <a href="/allsearch?page=<%=i%>">
-                                    <%=i%>
-                                </a>
-                                <% } %>
-                                    <% if(page < numberOfPages) { %> <a href="/allsearch?page=<%=page+1%>">After</a>
-                                        <% } %>
-
-                                            <br>
-
-                                            <div class="table-responsive">
-                                                <table id="example"
-                                                    class="table table-bordred table-striped text-center mb-5">
-
-                                                    <thead>
-                                                        <tr>
-
-                                                            <th>FILE NAME</th>
-                                                            <th>YEAR</th>
-                                                            <th>CODE</th>
-                                                            <th>TALUK</th>
-                                                            <th>HOBLI</th>
-                                                            <th>VILLAGE</th>
-                                                            <th>SURVEY NUMBER</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <% console.log("Data in EJS:", data); %>
-                                                            <% data.forEach(function(item){ %>
-
-                                                                <%= item.FILENAME %>
-                                                                    <tr>
-
-                                                                        <td>
-                                                                            <%= item.FILENAME %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= item.YEAR %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= item.CODE %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= item.TALUK %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= item.HOBLI %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= item.VILLAGE %>
-                                                                        </td>
-                                                                        <td>
-                                                                            <%= item.SURVEYNUMBER %>
-                                                                        </td>
-
-                                                                        <td>
-                                                                            <!-- Button to Open the Modal -->
-
-                                                                            <form action="/pdf/:PDFNAME" method="get">
-                                                                                <input type="hidden" id="SRNO"
-                                                                                    name="SRNO"
-                                                                                    value="<%= item.SRNO %>">
-                                                                                <input type="hidden" id="FILENAME"
-                                                                                    name="FILENAME"
-                                                                                    value="<%= item.FILENAME %>">
-                                                                                <input type="hidden" id="YEAR"
-                                                                                    name="YEAR"
-                                                                                    value="<%= item.YEAR %>">
-                                                                                <input type="hidden" id="CODE"
-                                                                                    name="CODE"
-                                                                                    value="<%= item.CODE %>">
-                                                                                <input type="hidden" id="TALUK"
-                                                                                    name="TALUK"
-                                                                                    value="<%= item.TALUK %>">
-                                                                                <input type="hidden" id="HOBLI"
-                                                                                    name="HOBLI"
-                                                                                    value="<%= item.HOBLI %>">
-                                                                                <input type="hidden" id="VILLAGE"
-                                                                                    name="VILLAGE"
-                                                                                    value="<%= item.VILLAGE %>">
-                                                                                <input type="hidden" id="SURVEYNUMBER"
-                                                                                    name="SURVEYNUMBER"
-                                                                                    value="<%= item.SURVEYNUMBER %>">
-                                                                                <input type="hidden" id="pdfname"
-                                                                                    name="pdfname"
-                                                                                    value="<%= item.PDFNAME %>">
-                                                                                <input type="hidden" id="comment"
-                                                                                    name="comment"
-                                                                                    value="<%= item.COMMENT %>">
-                                                                                <input type="hidden" id="indexName"
-                                                                                    name="indexName"
-                                                                                    value="<%= item.listName %>">
-                                                                                <input type="hidden" id="listName"
-                                                                                    name="listName"
-                                                                                    value="<%= item.listName %>">
-                                                                                <!-- <input type="submit" <i class="fa fa-eye"></i> > -->
-                                                                                <button style="background: bottom;
-                                            border: aliceblue;
-                                            color: black;"> <i class="fa fa-eye"></i></button>
-
-                                                                            </form>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <% }) %>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <%- include('./public/Navbar.ejs') %>
-                                                <br>
 
 
+        <div id="searchResultsContainer">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="text" id="searchInput" class="inputFieldClass" placeholder="Search FILENAME..."
+                                onkeyup="searchData()">
+                        </th>
+                        <th>
+                            <input type="text" id="yearInput" class="inputFieldClass" placeholder="Search YEAR..."
+                                onkeyup="searchData()">
+                        </th>
+                        <th>
+                            <input type="text" id="codeInput" class="inputFieldClass" placeholder="Search CODE..."
+                                onkeyup="searchData()">
+                        </th>
+                        <th>
+                            <input type="text" id="talukInput" class="inputFieldClass" placeholder="Search TALUK..."
+                                onkeyup="searchData()">
+                        </th>
+                        <th>
+                            <input type="text" id="hobliInput" class="inputFieldClass" placeholder="Search HOBLI..."
+                                onkeyup="searchData()">
+                        </th>
+                        <th>
+                            <input type="text" id="villageInput" class="inputFieldClass" placeholder="Search VILLAGE..."
+                                onkeyup="searchData()">
+                        </th>
+                        <th>
+                            <input type="text" id="surveyInput" class="inputFieldClass"
+                                placeholder="Search SURVEYNUMBER..." onkeyup="searchData()">
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>FILE NAME</th>
+                        <th>YEAR</th>
+                        <th>CODE</th>
+                        <th>TALUK</th>
+                        <th>HOBLI</th>
+                        <th>VILLAGE</th>
+                        <th>SURVEY NUMBER</th>
+                    </tr>
+                </thead>
+                <tbody id="searchResults"></tbody>
+            </table>
+            <div id="pagination">
+                <button id="previousButton" onclick="getPreviousPage()">Previous</button>
+                <span id="currentPage">1</span>
+                <button id="nextButton" onclick="getNextPage()">Next</button>
+            </div>
+            <div id="totalResults"></div>
+            <div id="loadingIndicator" style="display: none;">Loading...</div>
+            <div id="errorMessage" style="color: red;"></div>
+        </div>
 
-                                                <script>
-                                                    $(document).ready(function () {
-                                                        // Setup - add a text input to each footer cell
-                                                        $('table#example thead th').each(function (i) {
-                                                            var title = $('#example thead th').eq($(this).index()).text();
-                                                            $(this).html('<input type="text" id="filenameInput" placeholder="' + title + '" data-index="' + i + '" />');
-                                                        });
+        <script>
+            let currentPage = 1;
+            const resultsPerPage = 50;
+            let searchResultsData = [];
+            let totalResults = 0;
 
-                                                        // DataTable
-                                                        var table = $('#example').DataTable({
-                                                            scrollY: "300px",
-                                                            scrollX: true,
-                                                            scrollCollapse: true,
-                                                            paging: false,
-                                                            fixedColumns: true
-                                                        });
+            function searchData() {
+                const filenameInput = document.getElementById('searchInput').value;
+                const yearInput = document.getElementById('yearInput').value;
+                const codeInput = document.getElementById('codeInput').value;
+                const talukInput = document.getElementById('talukInput').value;
+                const hobliInput = document.getElementById('hobliInput').value;
+                const villageInput = document.getElementById('villageInput').value;
+                const surveyInput = document.getElementById('surveyInput').value;
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                loadingIndicator.style.display = 'block';
 
-                                                        // Filter event handler
-                                                        $(table.table().container()).on('keyup', 'thead input', function () {
-                                                            let searchTerm = $('#filenameInput').val();
+                fetch(`/search/query?filename=${filenameInput}&year=${yearInput}&code=${codeInput}&taluk=${talukInput}&hobli=${hobliInput}&village=${villageInput}&survey=${surveyInput}&page=${currentPage}&resultsPerPage=${resultsPerPage}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        searchResultsData = data.results;
+                        totalResults = data.totalResults;
+                        currentPage = 1;
+                        displayPage(currentPage);
+                        updatePaginationControls();
+                        displayTotalResults(totalResults);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        displayErrorMessage(error.message);
+                    })
+                    .finally(() => {
+                        loadingIndicator.style.display = 'none';
+                    });
+            }
 
-                                                            // Make an HTTP request to the server for database search
-                                                            $.get('/allsearch', { searchTerm: searchTerm })
-                                                            table
-                                                                .column($(this).data('index'))
-                                                                .search(this.value)
-                                                                .draw();
-                                                        });
-                                                    });
-                                                </script>
+            function displayPage(pageNumber) {
+                const searchResultsTable = document.getElementById('searchResults');
+                searchResultsTable.innerHTML = '';
 
+                const startIndex = (pageNumber - 1) * resultsPerPage;
+                const endIndex = startIndex + resultsPerPage;
+                const pageResults = searchResultsData.slice(startIndex, endIndex);
 
+                pageResults.forEach(result => {
+                    const row = document.createElement('tr');
+                    const columns = ['FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER'];
+
+                    columns.forEach(columnName => {
+                        const cell = document.createElement('td');
+                        cell.textContent = result[columnName] || '';
+                        row.appendChild(cell);
+                    });
+
+                    searchResultsTable.appendChild(row);
+                });
+            }
+
+            function updatePaginationControls() {
+                const previousButton = document.getElementById('previousButton');
+                const nextButton = document.getElementById('nextButton');
+                const currentPageSpan = document.getElementById('currentPage');
+
+                currentPageSpan.textContent = currentPage;
+
+                if (currentPage === 1) {
+                    previousButton.disabled = true;
+                } else {
+                    previousButton.disabled = false;
+                }
+
+                if (currentPage === getTotalPages()) {
+                    nextButton.disabled = true;
+                } else {
+                    nextButton.disabled = false;
+                }
+            }
+
+            function displayTotalResults(total) {
+                const totalResultsDiv = document.getElementById('totalResults');
+                totalResultsDiv.textContent = `Total Results: ${total}`;
+            }
+
+            function displayErrorMessage(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = `Error: ${message}`;
+            }
+
+            function getTotalPages() {
+                return Math.ceil(totalResults / resultsPerPage);
+            }
+
+            function getPreviousPage() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    searchData();
+                }
+            }
+
+            function getNextPage() {
+                const totalPages = getTotalPages();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    searchData();
+                }
+            }
+
+            // Initial search on page load (optional)
+            searchData();
+        </script>
 </body>
 
 </html>

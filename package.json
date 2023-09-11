@@ -29,6 +29,7 @@
     "alert": "^5.1.4",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "docxtemplater": "^3.36.0",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",

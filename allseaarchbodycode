@@ -1,0 +1,129 @@
+<body style="background-color:lightblue;">
+    <%- include('./public/Navbar.ejs') %>
+
+
+        <div class="search_result">hello search result is---</div>
+
+        <div class="table-responsive">
+            <table id="example " class="table table-bordred table-striped text-center mb-5">
+
+                <thead>
+                    <tr>
+
+                        <th>FILE NAME</th>
+                        <th>YEAR</th>
+                        <th>CODE</th>
+                        <th>TALUK</th>
+                        <th>HOBLI</th>
+                        <th>VILLAGE</th>
+                        <th>SURVEY NUMBER</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% console.log("Data in EJS:", data.length); %>
+                        <% data.forEach(function(item){ %>
+
+                            <tr>
+
+                                <td>
+                                    <%= item.FILENAME %>
+                                </td>
+                                <td>
+                                    <%= item.YEAR %>
+                                </td>
+                                <td>
+                                    <%= item.CODE %>
+                                </td>
+                                <td>
+                                    <%= item.TALUK %>
+                                </td>
+                                <td>
+                                    <%= item.HOBLI %>
+                                </td>
+                                <td>
+                                    <%= item.VILLAGE %>
+                                </td>
+                                <td>
+                                    <%= item.SURVEYNUMBER %>
+                                </td>
+
+                                <td>
+                                    <!-- Button to Open the Modal -->
+
+                                    <form action="/pdf/:PDFNAME" method="get">
+                                        <input type="hidden" id="SRNO" name="SRNO" value="<%= item.SRNO %>">
+                                        <input type="hidden" id="FILENAME" name="FILENAME" value="<%= item.FILENAME %>">
+                                        <input type="hidden" id="YEAR" name="YEAR" value="<%= item.YEAR %>">
+                                        <input type="hidden" id="CODE" name="CODE" value="<%= item.CODE %>">
+                                        <input type="hidden" id="TALUK" name="TALUK" value="<%= item.TALUK %>">
+                                        <input type="hidden" id="HOBLI" name="HOBLI" value="<%= item.HOBLI %>">
+                                        <input type="hidden" id="VILLAGE" name="VILLAGE" value="<%= item.VILLAGE %>">
+                                        <input type="hidden" id="SURVEYNUMBER" name="SURVEYNUMBER"
+                                            value="<%= item.SURVEYNUMBER %>">
+                                        <input type="hidden" id="pdfname" name="pdfname" value="<%= item.PDFNAME %>">
+                                        <input type="hidden" id="comment" name="comment" value="<%= item.COMMENT %>">
+                                        <input type="hidden" id="indexName" name="indexName"
+                                            value="<%= item.listName %>">
+                                        <input type="hidden" id="listName" name="listName" value="<%= item.listName %>">
+                                        <button style="background: bottom;
+                                            border: aliceblue;
+                                            color: black;"> <i class="fa fa-eye"></i></button>
+
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <br>
+
+
+
+        <script>
+            $(document).ready(function () {
+                $('')
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                var table = $('#example').DataTable({
+                    scrollY: "300px",
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: false,
+                    fixedColumns: true
+                });
+
+                $('table#example thead th').each(function (i) {
+                    var title = $(this).text();
+                    $(this).html('<input type="text" class="column-filter" placeholder="' + title + '" data-index="' + i + '" />');
+                });
+
+                $(table.table().container()).on('keyup', 'thead input.column-filter', function () {
+                    let searchTerm = $(this).val();
+
+
+
+                    $.get('/allsearch', { searchTerm: searchTerm }, function (data) {
+                        console.log("allsearchtearm========", data);
+
+                        if (typeof data !== 'object') {
+                            console.error('Invalid response from the server:', data);
+                            return;
+                        }
+
+
+                    });
+                    table
+                        .column($(this).data('index'))
+                        .search(this.value)
+                        .draw();
+
+                });
+            });
+        </script>
+
+
+</body>

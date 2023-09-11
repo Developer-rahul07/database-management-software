@@ -19,6 +19,17 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
+
+router.get('/allsearch', (req, res) => {
+    res.render('allSearch');
+})
+
+router.get('/search/query', userController.newSearch);
+router.get('/newSearch', (req, res) => {
+    res.render('newSearch');
+})
+
+
 router.post('/multiSearch', userController.multiSearch);
 
 // router.post('/pdf/:PDFNAME', userController.pdfcomment);
@@ -27,7 +38,6 @@ router.post('/multiSearch', userController.multiSearch);
 // })
 
 
-router.get('/allsearch', userController.allsearch);
 
 router.get('/excelinfo', userController.excelInfo)
 

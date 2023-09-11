@@ -7,6 +7,13 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
 const cookieParser = require("cookie-parser");
+const cors = require("cors")
+app.use(cors(
+    {
+        origin: "http://localhost:4000"
+
+    }
+));
 
 const port = process.env.PORT || 4000;
 

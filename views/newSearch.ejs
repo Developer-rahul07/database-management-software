@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search Data</title>
+    <style>
+        /* Your CSS styles here */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th,
+        .results-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .results-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .results-table tbody tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./public/Navbar.ejs') %>
+
+        <input type="text" id="searchInput" placeholder="Search Filename..." onkeyup="searchData()">
+        <input type="text" id="yearInput" placeholder="Search Year..." onkeyup="searchData()">
+        <input type="text" id="codeInput" placeholder="Search Year..." onkeyup="searchData()">
+        <input type="text" id="talukInput" placeholder="Search Year..." onkeyup="searchData()">
+        <input type="text" id="hobliInput" placeholder="Search Year..." onkeyup="searchData()">
+        <input type="text" id="villageInput" placeholder="Search Year..." onkeyup="searchData()">
+        <input type="text" id="surveyInput" placeholder="Search Year..." onkeyup="searchData()">
+        <div id="searchResultsContainer">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>FILE NAME</th>
+                        <th>YEAR</th>
+                        <th>CODE</th>
+                        <th>TALUK</th>
+                        <th>HOBLI</th>
+                        <th>VILLAGE</th>
+                        <th>SURVEY NUMBER</th>
+                    </tr>
+                </thead>
+                <tbody id="searchResults"></tbody>
+            </table>
+            <div id="pagination">
+                <button id="previousButton" onclick="getPreviousPage()">Previous</button>
+                <span id="currentPage">1</span>
+                <button id="nextButton" onclick="getNextPage()">Next</button>
+            </div>
+            <div id="totalResults"></div>
+            <div id="loadingIndicator" style="display: none;">Loading...</div>
+            <div id="errorMessage" style="color: red;"></div>
+        </div>
+
+        <script>
+            let currentPage = 1;
+            const resultsPerPage = 50;
+            let searchResultsData = [];
+            let totalResults = 0;
+
+            function searchData() {
+                const filenameInput = document.getElementById('searchInput').value;
+                const yearInput = document.getElementById('yearInput').value;
+                const codeInput = document.getElementById('codeInput').value;
+                const talukInput = document.getElementById('talukInput').value;
+                const hobliInput = document.getElementById('hobliInput').value;
+                const villageInput = document.getElementById('villageInput').value;
+                const surveyInput = document.getElementById('surveyInput').value;
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                loadingIndicator.style.display = 'block';
+
+                fetch(`/search/query?filename=${filenameInput}&year=${yearInput}&code=${codeInput}&taluk=${talukInput}&hobli=${hobliInput}&village=${villageInput}&survey=${surveyInput}&page=${currentPage}&resultsPerPage=${resultsPerPage}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        searchResultsData = data.results;
+                        totalResults = data.totalResults;
+                        currentPage = 1;
+                        displayPage(currentPage);
+                        updatePaginationControls();
+                        displayTotalResults(totalResults);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        displayErrorMessage(error.message);
+                    })
+                    .finally(() => {
+                        loadingIndicator.style.display = 'none';
+                    });
+            }
+
+            function displayPage(pageNumber) {
+                const searchResultsTable = document.getElementById('searchResults');
+                searchResultsTable.innerHTML = '';
+
+                const startIndex = (pageNumber - 1) * resultsPerPage;
+                const endIndex = startIndex + resultsPerPage;
+                const pageResults = searchResultsData.slice(startIndex, endIndex);
+
+                pageResults.forEach(result => {
+                    const row = document.createElement('tr');
+                    const columns = ['FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER'];
+
+                    columns.forEach(columnName => {
+                        const cell = document.createElement('td');
+                        cell.textContent = result[columnName] || '';
+                        row.appendChild(cell);
+                    });
+
+                    searchResultsTable.appendChild(row);
+                });
+            }
+
+            function updatePaginationControls() {
+                const previousButton = document.getElementById('previousButton');
+                const nextButton = document.getElementById('nextButton');
+                const currentPageSpan = document.getElementById('currentPage');
+
+                currentPageSpan.textContent = currentPage;
+
+                if (currentPage === 1) {
+                    previousButton.disabled = true;
+                } else {
+                    previousButton.disabled = false;
+                }
+
+                if (currentPage === getTotalPages()) {
+                    nextButton.disabled = true;
+                } else {
+                    nextButton.disabled = false;
+                }
+            }
+
+            function displayTotalResults(total) {
+                const totalResultsDiv = document.getElementById('totalResults');
+                totalResultsDiv.textContent = `Total Results: ${total}`;
+            }
+
+            function displayErrorMessage(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = `Error: ${message}`;
+            }
+
+            function getTotalPages() {
+                return Math.ceil(totalResults / resultsPerPage);
+            }
+
+            function getPreviousPage() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    searchData();
+                }
+            }
+
+            function getNextPage() {
+                const totalPages = getTotalPages();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    searchData();
+                }
+            }
+
+            // Initial search on page load (optional)
+            searchData();
+        </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- views/search.ejs
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search Page</title>
+    <style>
+        /* Your CSS styles here */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th,
+        .results-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .results-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .results-table tbody tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Search Data</h1>
+    <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchData()">
+    <div id="searchResultsContainer">
+        <div id="searchResults"></div>
+        <div id="pagination">
+            <button id="previousButton" onclick="getPreviousPage()">Previous</button>
+            <span id="currentPage">1</span>
+            <button id="nextButton" onclick="getNextPage()">Next</button>
+        </div>
+        <div id="totalResults"></div>
+        <div id="loadingIndicator" style="display: none;">Loading...</div>
+        <div id="errorMessage" style="color: red;"></div>
+    </div>
+
+
+
+    <script>
+        let currentPage = 1; // Track the current page number
+        let searchResultsData = []; // Store all search results
+
+        function searchData() {
+            const input = document.getElementById('searchInput').value;
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'block';
+
+            // Send an AJAX request to the server
+            fetch(`/search/query?q=${input}&page=${currentPage}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    searchResultsData = data; // Store all search results
+                    currentPage = 1; // Reset to the first page when performing a new search
+                    displayPage(currentPage); // Display the first page of results
+                    updatePaginationControls();
+                    displayTotalResults(data.length);
+                })
+                .catch(error => {
+                    console.error(error);
+                    displayErrorMessage(error.message);
+                })
+                .finally(() => {
+                    loadingIndicator.style.display = 'none';
+                });
+        }
+
+        function displayPage(pageNumber) {
+            const searchResultsDiv = document.getElementById('searchResults');
+            searchResultsDiv.innerHTML = '';
+
+            // Create a table element
+            const table = document.createElement('table');
+            table.classList.add('results-table'); // Add a class for styling, if needed
+
+            // Create table headers
+            const tableHeader = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            const headers = ['FILE NAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEY NUMBER', ''];
+
+            headers.forEach(headerText => {
+                const headerCell = document.createElement('th');
+                headerCell.textContent = headerText;
+                headerRow.appendChild(headerCell);
+            });
+
+            tableHeader.appendChild(headerRow);
+            table.appendChild(tableHeader);
+
+            // Create table body
+            const tableBody = document.createElement('tbody');
+
+            const startIndex = (pageNumber - 1) * searchResultsData.length;
+            const endIndex = startIndex + searchResultsData.length;
+            const pageResults = searchResultsData.slice(startIndex, endIndex);
+
+            pageResults.forEach(result => {
+                const row = document.createElement('tr');
+
+                const columns = ['FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER'];
+
+                columns.forEach(columnName => {
+                    const cell = document.createElement('td');
+                    cell.textContent = result[columnName] || ''; // Modify to display the relevant database field
+                    row.appendChild(cell);
+                });
+
+                tableBody.appendChild(row);
+            });
+
+            table.appendChild(tableBody);
+
+            // Append the table to the searchResultsDiv
+            searchResultsDiv.appendChild(table);
+        }
+
+        function updatePaginationControls() {
+            const previousButton = document.getElementById('previousButton');
+            const nextButton = document.getElementById('nextButton');
+            const currentPageSpan = document.getElementById('currentPage');
+
+            currentPageSpan.textContent = currentPage;
+
+            if (currentPage === 1) {
+                previousButton.disabled = true;
+            } else {
+                previousButton.disabled = false;
+            }
+
+            if (currentPage === getTotalPages()) {
+                nextButton.disabled = true;
+            } else {
+                nextButton.disabled = false;
+            }
+        }
+
+        function displayTotalResults(total) {
+            const totalResultsDiv = document.getElementById('totalResults');
+            totalResultsDiv.textContent = `Total Results: ${total}`;
+        }
+
+        function displayErrorMessage(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = `Error: ${message}`;
+        }
+
+        function getTotalPages() {
+            return 2; // Only one page since we display all results on a single page
+        }
+
+        function getPreviousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayPage(currentPage);
+                updatePaginationControls();
+            }
+        }
+
+        function getNextPage() {
+            if (currentPage < getTotalPages()) {
+                currentPage++;
+                displayPage(currentPage);
+                updatePaginationControls();
+            }
+        }
+    </script>
+</body>
+
+</html> -->

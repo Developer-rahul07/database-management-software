@@ -17,6 +17,106 @@ let db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE, (err) => 
     }
 });
 
+const database = [
+    'Apple',
+    'Banana',
+    'Cherry',
+    'Date',
+    'Fig',
+    'Grape',
+    'Kiwi',
+    'Lemon',
+    'Mango',
+    'Orange',
+    'Peach',
+    'Pear',
+    'Pineapple',
+    'Strawberry',
+    'Watermelon',
+    'apple',
+]
+
+
+const newSearch = async (req, res) => {
+    const filename = req.query.filename;
+    const year = req.query.year;
+    const code = req.query.code;
+    const taluk = req.query.taluk;
+    const hobli = req.query.hobli;
+    const village = req.query.village;
+    const survey = req.query.survey;
+    const page = req.query.page || 1;
+    const resultsPerPage = 50; // Number of results per page
+
+    // Calculate the offset based on the current page
+    const offset = (page - 1) * resultsPerPage;
+
+    // Modify your database query to include both filename and year
+    const query = `
+    SELECT * 
+    FROM alldata 
+    WHERE FILENAME LIKE '%${filename}%' 
+      AND YEAR LIKE '%${year}%' AND CODE LIKE '%${code}%' AND TALUK LIKE '%${taluk}%' AND HOBLI LIKE '%${hobli}%' AND VILLAGE LIKE '%${village}%' AND SURVEYNUMBER LIKE '%${survey}%' LIMIT ${resultsPerPage}
+    OFFSET ${offset}
+  `;
+
+    // Fetch the total count of matching records without LIMIT/OFFSET
+    const totalCountQuery = `
+    SELECT COUNT(*) as totalCount
+    FROM alldata
+    WHERE FILENAME LIKE '%${filename}%' 
+      AND YEAR LIKE '%${year}%' AND CODE LIKE '%${code}%' AND TALUK LIKE '%${taluk}%' AND HOBLI LIKE '%${hobli}%' AND VILLAGE LIKE '%${village}%' AND SURVEYNUMBER LIKE '%${survey}%'
+  `;
+
+    db.all(query, (err, results) => {
+        if (err) {
+            console.error('Error executing SQLite query:', err);
+            res.status(500).json([]);
+            return;
+        }
+
+        // Fetch total count of matching records
+        db.get(totalCountQuery, (err, row) => {
+            if (err) {
+                console.error('Error fetching total count:', err);
+                res.status(500).json([]);
+                return;
+            }
+
+            const totalResults = row.totalCount;
+            res.json({ results, totalResults });
+        });
+    });
+}
+
+
+// working fine with commeted code of ejs too
+// const newSearch = async (req, res) => {
+//     const searchTerm = req.query.q;
+
+//     const query = `SELECT * FROM alldata WHERE FILENAME LIKE '%${searchTerm}%'`;
+//     db.all(query, (err, results) => {
+//         if (err) {
+//             console.error('Error executing SQLite query:', err);
+//             res.status(500).json([]);
+//             return;
+//         }
+
+//         // Pagination
+//         const currentPage = parseInt(req.query.page) || 1;
+//         const resultsPerPage = 10; // Number of results per page
+//         const startIndex = (currentPage - 1) * resultsPerPage;
+//         const endIndex = startIndex + resultsPerPage;
+//         const pageResults = results.slice(startIndex, endIndex);
+//         console.log("serasdsdaatafdtad", pageResults);
+
+//         res.json(pageResults);
+//     });
+//     // Example using a mock database:
+
+
+// }
+
 const multiSearch = async (req, res) => {
     const indexName = req.body.indexName;
 
@@ -121,26 +221,32 @@ const multiSearch = async (req, res) => {
 
 const allsearch = async (req, res) => {
 
-    // if (req.query.searchTerm) {
-    if (true) {
-        // const searchTerm = req.query.searchTerm;
-        const searchTerm = "A2CR2/60-61";
+    if (req.query.searchTerm) {
+
+        const searchTerm = req.query.searchTerm;
+        // const searchTerm = "A2CR2/60-61";
         console.log("searchTerm=========", searchTerm);
 
         // Perform the database query for search
-        db.all('SELECT * FROM alldata WHERE FILENAME = ?', [searchTerm], (err, rows) => {
+        db.all('SELECT * FROM alldata WHERE FILENAME LIKE ?', [`%${searchTerm}%`], (err, rows) => {
             console.log("rowasssss----", rows.length)
             // console.log("rowasssss----", rows)
             if (err) {
                 console.log("Error:", err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            if (req.query.json === 'true') {
-                res.json(rows);
-            } else {
-                res.render('allsearch', { data: rows, page: 10, iterator: 10, endingLink: 10, numberOfPages: 10 });
-            }
+
+            res.render('allsearch', { data: rows, page: 10, iterator: 10, endingLink: 10, numberOfPages: 10 }, (err, html) => {
+                console.log("html--------", html);
+                if (err) {
+                    console.log("Error:", err);
+                    return res.status(500).json({ error: 'Internal server error at allsearch' });
+                }
+                res.send(html);
+            });
+
             console.log("insdie iffffffffffffffffffffff");
+
 
         });
     } else {
@@ -1011,6 +1117,7 @@ const addComment = (req, res) => {
 
 }
 
+exports.newSearch = newSearch;
 exports.multiSearch = multiSearch;
 exports.pdfView = pdfView;
 exports.pdfViewListview = pdfViewListview;

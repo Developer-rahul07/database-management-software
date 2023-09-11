@@ -1,0 +1,31 @@
+<!-- views/search.ejs -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search Page</title>
+    <!-- Include your CSS and JavaScript files here -->
+</head>
+
+<body>
+    <h1>Search Data</h1>
+    <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchData()">
+    <div id="searchResults"></div>
+
+    <script>
+        function searchData() {
+            const input = document.getElementById('searchInput').value;
+            // Send an AJAX request to the server
+            fetch(`/search/query?q=${input}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update the searchResultsDiv with the search results
+                    const searchResultsDiv = document.getElementById('searchResults');
+                    searchResultsDiv.innerHTML = data.map(result => `<p>${result}</p>`).join('');
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
+</body>
+
+</html>
