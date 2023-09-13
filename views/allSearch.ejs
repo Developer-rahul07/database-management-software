@@ -103,6 +103,9 @@
                         <th>HOBLI</th>
                         <th>VILLAGE</th>
                         <th>SURVEY NUMBER</th>
+                        <th>Pdf View</th>
+                        <th>Delete</th>
+                        <th>Add Comment</th>
                     </tr>
                 </thead>
                 <tbody id="searchResults"></tbody>
@@ -148,6 +151,7 @@
                         displayPage(currentPage);
                         updatePaginationControls();
                         displayTotalResults(totalResults);
+                        // sendSearchResultsDataToServer(searchResultsData); // Send the data to the server
                     })
                     .catch(error => {
                         console.error(error);
@@ -157,6 +161,57 @@
                         loadingIndicator.style.display = 'none';
                     });
             }
+
+            // this code is used to send data to server using post method
+            // function sendSearchResultsDataToServer(data) {
+            //     fetch('/allsearch', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //         },
+            //         body: JSON.stringify({ searchResultsData: data }),
+            //     })
+            //         .then(response => {
+            //             if (!response.ok) {
+            //                 throw new Error('Network response was not ok');
+            //             }
+            //             return response.text(); // Parse the response as text (if server responds with data)
+            //         })
+            //         .then(responseText => {
+            //             console.log(responseText); // Log the server response if needed
+            //         })
+            //         .catch(error => {
+            //             console.error(error);
+            //             // Handle error if needed
+            //         });
+            // }
+
+            // this code is used to send data to server using get method
+            // function sendSearchResultsDataToServer(data) {
+            //     const queryParams = new URLSearchParams();
+            //     queryParams.append('searchResultsData', JSON.stringify(data));
+
+            //     console.log("queryParams isisiissiissiis", queryParams.toString());
+
+            //     fetch(`/allsearch?${queryParams.toString()}`, {
+            //         method: 'GET',
+            //     })
+            //         .then(response => {
+            //             if (!response.ok) {
+            //                 throw new Error('Network response was not ok');
+            //             }
+            //             return response.text(); // Parse the response as text (if server responds with data)
+            //         })
+            //         .then(responseText => {
+            //             console.log(responseText); // Log the server response if needed
+            //         })
+            //         .catch(error => {
+            //             console.error(error);
+            //             // Handle error if needed
+            //         });
+            // }
+
+
 
             function displayPage(pageNumber) {
                 const searchResultsTable = document.getElementById('searchResults');
@@ -168,14 +223,98 @@
 
                 pageResults.forEach(result => {
                     const row = document.createElement('tr');
-                    const columns = ['FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER'];
+                    const columns = ['FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER', 'PDFNAME', 'Delete', 'COMMENT'];
 
                     columns.forEach(columnName => {
                         const cell = document.createElement('td');
-                        cell.textContent = result[columnName] || '';
+                        if (columnName === 'PDFNAME') {
+                            // Create the form and button for FILENAME column
+                            const form = document.createElement('form');
+                            form.action = `/pdf/${result.PDFNAME}`;
+                            form.method = 'get';
+
+                            // Add hidden input fields
+                            const hiddenFields = [
+                                'SRNO', 'FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER',
+                                'pdfname', 'comment', 'indexName', 'listName'
+                            ];
+
+                            hiddenFields.forEach(fieldName => {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.id = fieldName;
+                                input.name = fieldName;
+                                input.value = result[fieldName] || '';
+                                form.appendChild(input);
+                            });
+
+                            // Create the button
+                            const button = document.createElement('button');
+                            button.style.background = 'bottom';
+                            button.style.border = 'aliceblue';
+                            button.style.color = 'black';
+                            button.innerHTML = '<i class="fa fa-eye"></i>';
+
+                            // Append the button to the form
+                            form.appendChild(button);
+
+                            // Append the form to the cell
+                            cell.appendChild(form);
+                        } else if (columnName === 'Delete') {
+                            // Create the form and button for FILENAME column
+                            const form = document.createElement('form');
+                            form.action = `/deleteInfo`;
+                            form.method = 'post';
+
+                            // Add hidden input fields
+                            const hiddenFields = [
+                                'SRNO', 'listName'
+                            ];
+
+                            hiddenFields.forEach(fieldName => {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.id = fieldName;
+                                input.name = fieldName;
+                                input.value = result[fieldName] || '';
+                                form.appendChild(input);
+                            });
+
+                            // Create the button
+                            const button = document.createElement('button');
+                            button.style.background = 'bottom';
+                            button.style.border = 'aliceblue';
+                            button.style.color = 'black';
+                            button.innerHTML = '<i class="fa fa-trash"></i>';
+
+                            // Append the button to the form
+                            form.appendChild(button);
+
+                            // Append the form to the cell
+                            cell.appendChild(form);
+                        } else if (columnName === 'COMMENT') {
+                            // Create the form and button for FILENAME column
+                            const a = document.createElement('a');
+                            a.href = `/uploadpdf/${result.PDFNAME}`;
+
+                            a.innerHTML = '<i class="fa fa-plus"></i>';
+
+                            // Append the button to the form
+                            cell.appendChild(a);
+
+                            // Append the form to the cell
+                            // cell.appendChild(form);
+                        }
+                        else {
+                            // For other columns, simply set the cell's text content
+                            cell.textContent = result[columnName] || '';
+                        }
+
+                        // Append the cell to the row
                         row.appendChild(cell);
                     });
 
+                    // Append the row to the table
                     searchResultsTable.appendChild(row);
                 });
             }

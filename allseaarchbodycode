@@ -2,26 +2,27 @@
     <%- include('./public/Navbar.ejs') %>
 
 
-        <div class="search_result">hello search result is---</div>
+        <% console.log("Data in EJS:", data.length); %>
 
-        <div class="table-responsive">
-            <table id="example " class="table table-bordred table-striped text-center mb-5">
+            <div class="search_result">hello search result is---</div>
 
-                <thead>
-                    <tr>
+            <div class="table-responsive">
+                <table id="example " class="table table-bordred table-striped text-center mb-5">
 
-                        <th>FILE NAME</th>
-                        <th>YEAR</th>
-                        <th>CODE</th>
-                        <th>TALUK</th>
-                        <th>HOBLI</th>
-                        <th>VILLAGE</th>
-                        <th>SURVEY NUMBER</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% console.log("Data in EJS:", data.length); %>
+                    <thead>
+                        <tr>
+
+                            <th>FILE NAME</th>
+                            <th>YEAR</th>
+                            <th>CODE</th>
+                            <th>TALUK</th>
+                            <th>HOBLI</th>
+                            <th>VILLAGE</th>
+                            <th>SURVEY NUMBER</th>
+                            <th>PDF VIEW</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <% data.forEach(function(item){ %>
 
                             <tr>
@@ -74,56 +75,56 @@
                                 </td>
                             </tr>
                             <% }) %>
-                </tbody>
-            </table>
-        </div>
-        <br>
+                    </tbody>
+                </table>
+            </div>
+            <br>
 
 
 
-        <script>
-            $(document).ready(function () {
-                $('')
-            });
-        </script>
-        <script>
-            $(document).ready(function () {
-                var table = $('#example').DataTable({
-                    scrollY: "300px",
-                    scrollX: true,
-                    scrollCollapse: true,
-                    paging: false,
-                    fixedColumns: true
+            <script>
+                $(document).ready(function () {
+                    $('')
                 });
+            </script>
+            <script>
+                $(document).ready(function () {
+                    var table = $('#example').DataTable({
+                        scrollY: "300px",
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: false,
+                        fixedColumns: true
+                    });
 
-                $('table#example thead th').each(function (i) {
-                    var title = $(this).text();
-                    $(this).html('<input type="text" class="column-filter" placeholder="' + title + '" data-index="' + i + '" />');
-                });
+                    $('table#example thead th').each(function (i) {
+                        var title = $(this).text();
+                        $(this).html('<input type="text" class="column-filter" placeholder="' + title + '" data-index="' + i + '" />');
+                    });
 
-                $(table.table().container()).on('keyup', 'thead input.column-filter', function () {
-                    let searchTerm = $(this).val();
+                    $(table.table().container()).on('keyup', 'thead input.column-filter', function () {
+                        let searchTerm = $(this).val();
 
 
 
-                    $.get('/allsearch', { searchTerm: searchTerm }, function (data) {
-                        console.log("allsearchtearm========", data);
+                        $.get('/allsearch', { searchTerm: searchTerm }, function (data) {
+                            console.log("allsearchtearm========", data);
 
-                        if (typeof data !== 'object') {
-                            console.error('Invalid response from the server:', data);
-                            return;
-                        }
+                            if (typeof data !== 'object') {
+                                console.error('Invalid response from the server:', data);
+                                return;
+                            }
 
+
+                        });
+                        table
+                            .column($(this).data('index'))
+                            .search(this.value)
+                            .draw();
 
                     });
-                    table
-                        .column($(this).data('index'))
-                        .search(this.value)
-                        .draw();
-
                 });
-            });
-        </script>
+            </script>
 
 
 </body>

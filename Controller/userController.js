@@ -17,25 +17,13 @@ let db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE, (err) => 
     }
 });
 
-const database = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Fig',
-    'Grape',
-    'Kiwi',
-    'Lemon',
-    'Mango',
-    'Orange',
-    'Peach',
-    'Pear',
-    'Pineapple',
-    'Strawberry',
-    'Watermelon',
-    'apple',
-]
 
+// const allSearchPost = async (req, res) => {
+//     let searchResultsData = req.body.searchResultsData;
+//     console.log("searchResultsData from client: route.js", searchResultsData.length);
+
+//     res.render("allSearch", { searchResultsData });
+// }
 
 const newSearch = async (req, res) => {
     const filename = req.query.filename;
@@ -1015,31 +1003,29 @@ const addentryData = (req, res) => {
 
 const deleteInfo = (req, res) => {
     var id = req.body.SRNO;
-    var indexName = req.body.indexName;
+    var indexName = req.body.indexName || req.body.listName;
+    console.log("indexNameindexNameindexName---", indexName);
     var data = req.userData;
     //  var mergePdf ='1';
-    console.log(indexName);
     db.run(`DELETE FROM ${indexName} WHERE SRNO = ?`, [id], function (error) {
         if (error) {
             console.error(error.message);
         }
-
-
-        console.log(data);
-
         //getting data from List table
-        db.all(`SELECT * FROM ${indexName}`, (error, row) => {
-            // console.log("listview page row-----", row);
+        //     db.all(`SELECT * FROM ${indexName}`, (error, row) => {
+        //         // console.log("listview page row-----", row);
 
 
-            if (error) {
-                console.log("erorrrr in table--userController----", error);
-            }
-            // console.log("listviewpage row is-------",row);
-            res.render('listviewpage', { listviewpage: row, permission: 1, indexName })
+        //         if (error) {
+        //             console.log("erorrrr in table--userController----", error);
+        //         }
+        //         // console.log("listviewpage row is-------",row);
+        //         // res.render('listviewpage', { listviewpage: row, permission: 1, indexName })
+        //         // res.render('allSearch', { listviewpage: row, permission: 1, indexName })
 
-        });
+        //     });
     });
+    return
 
 }
 
@@ -1117,6 +1103,7 @@ const addComment = (req, res) => {
 
 }
 
+// exports.allSearchPost = allSearchPost;
 exports.newSearch = newSearch;
 exports.multiSearch = multiSearch;
 exports.pdfView = pdfView;

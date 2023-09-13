@@ -21,10 +21,16 @@ const upload = multer({ storage: storage })
 
 
 router.get('/allsearch', (req, res) => {
-    res.render('allSearch');
+
+    // let searchResultsData = "searchResultsData i am fine!"
+
+    // res.render("allSearch", { data: searchResultsData });
+    res.render("allSearch");
 })
 
 router.get('/search/query', userController.newSearch);
+// router.post('/allSearchData', userController.allSearchPost);
+
 router.get('/newSearch', (req, res) => {
     res.render('newSearch');
 })

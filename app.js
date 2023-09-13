@@ -6,13 +6,12 @@ const app = express();
 //view engine
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
+app.use(express.json());
+
 const cookieParser = require("cookie-parser");
 const cors = require("cors")
 app.use(cors(
-    {
-        origin: "http://localhost:4000"
 
-    }
 ));
 
 const port = process.env.PORT || 4000;
