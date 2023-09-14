@@ -26,13 +26,14 @@ let db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE, (err) => 
 // }
 
 const newSearch = async (req, res) => {
-    const filename = req.query.filename;
-    const year = req.query.year;
-    const code = req.query.code;
-    const taluk = req.query.taluk;
-    const hobli = req.query.hobli;
-    const village = req.query.village;
-    const survey = req.query.survey;
+    // console.log('im here');
+    const KNNLCAO = req.query.KNNLCAO;
+    const SECTION = req.query.SECTION;
+    const OFFICE = req.query.OFFICE;
+    const YEAR = req.query.YEAR;
+    const FILENUMBER = req.query.FILENUMBER;
+    const CODE = req.query.CODE;
+    // const survey = req.query.survey;
     const page = req.query.page || 1;
     const resultsPerPage = 50; // Number of results per page
 
@@ -43,8 +44,8 @@ const newSearch = async (req, res) => {
     const query = `
     SELECT * 
     FROM alldata 
-    WHERE FILENAME LIKE '%${filename}%' 
-      AND YEAR LIKE '%${year}%' AND CODE LIKE '%${code}%' AND TALUK LIKE '%${taluk}%' AND HOBLI LIKE '%${hobli}%' AND VILLAGE LIKE '%${village}%' AND SURVEYNUMBER LIKE '%${survey}%' LIMIT ${resultsPerPage}
+    WHERE KNNLCAO LIKE '%${KNNLCAO}%' 
+      AND SECTION LIKE '%${SECTION}%' AND OFFICE LIKE '%${OFFICE}%' AND YEAR LIKE '%${YEAR}%' AND FILENUMBER LIKE '%${FILENUMBER}%' AND CODE LIKE '%${CODE}%' LIMIT ${resultsPerPage}
     OFFSET ${offset}
   `;
 
@@ -52,8 +53,9 @@ const newSearch = async (req, res) => {
     const totalCountQuery = `
     SELECT COUNT(*) as totalCount
     FROM alldata
-    WHERE FILENAME LIKE '%${filename}%' 
-      AND YEAR LIKE '%${year}%' AND CODE LIKE '%${code}%' AND TALUK LIKE '%${taluk}%' AND HOBLI LIKE '%${hobli}%' AND VILLAGE LIKE '%${village}%' AND SURVEYNUMBER LIKE '%${survey}%'
+    WHERE KNNLCAO LIKE '%${KNNLCAO}%' 
+      AND SECTION LIKE '%${SECTION}%' AND OFFICE LIKE '%${OFFICE}%' AND YEAR LIKE '%${YEAR}%' AND FILENUMBER LIKE '%${FILENUMBER}%' AND CODE LIKE '%${CODE}%' LIMIT ${resultsPerPage}
+  
   `;
 
     db.all(query, (err, results) => {
@@ -62,7 +64,8 @@ const newSearch = async (req, res) => {
             res.status(500).json([]);
             return;
         }
-
+// console.log(results);
+// console.log(query);
         // Fetch total count of matching records
         db.get(totalCountQuery, (err, row) => {
             if (err) {
@@ -76,6 +79,7 @@ const newSearch = async (req, res) => {
         });
     });
 }
+
 
 
 // working fine with commeted code of ejs too
@@ -452,31 +456,32 @@ const addUser = (req, res) => {
     var empid = req.body.empid;
     var userid = req.body.userid;
     var password = req.body.password;
-    var cUser = req.body.cUser;
-    var updateUser = req.body.updateUser;
-    var delUser = req.body.delUser;
-    var addList = req.body.addList;
-    var delList = req.body.delList;
+    // var cUser = req.body.cUser;
+    // var updateUser = req.body.updateUser;
+    // var delUser = req.body.delUser;
+    // var addList = req.body.addList;
+    // var delList = req.body.delList;
     var addEntry = req.body.addEntry;
     var updateEntry = req.body.updateEntry;
     var mergePdf = req.body.mergepdf;
     var deleteEntry = req.body.deletentry;
 
-    if (cUser != '1') {
-        cUser = "0";
-    }
-    if (updateUser != '1') {
-        updateUser = "0";
-    }
-    if (delUser != '1') {
-        delUser = "0";
-    }
-    if (addList != '1') {
-        addList = "0";
-    }
-    if (delList != '1') {
-        delList = "0";
-    }
+    // if (cUser != '1') {
+    //     cUser = "0";
+    // }
+    // if (updateUser != '1') {
+    //     updateUser = "0";
+    // }
+    // if (delUser != '1') {
+    //     delUser = "0";
+    // }
+
+    // if (addList != '1') {
+    //     addList = "0";
+    // }
+    // if (delList != '1') {
+    //     delList = "0";
+    // }
     if (addEntry != '1') {
         addEntry = "0";
     }
@@ -490,7 +495,7 @@ const addUser = (req, res) => {
         deleteEntry = "0";
     }
 
-    db.run(`INSERT INTO mytable(name,empid,userid,password,cUser,updateUser,delUser,addList,delList,addEntry,updateEntry,mergePdf,deleteEntry) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`, [name, empid, userid, password, cUser, updateUser, delUser, addList, delList, addEntry, updateEntry, mergePdf, deleteEntry], function (err) {
+    db.run(`INSERT INTO mytable(name,empid,userid,password,addEntry,updateEntry,mergePdf,deleteEntry) VALUES(?,?,?,?,?,?,?,?)`, [name, empid, userid, password, cUser, updateUser, delUser, addList, delList, addEntry, updateEntry, mergePdf, deleteEntry], function (err) {
         if (err) {
             return console.log(err.message);
         }
@@ -535,25 +540,21 @@ const listviewpage = (req, res) => {
 
 
 const pdfView = (req, res) => {
-    // var name = req.params.PDFNAME;
     var SRNO = req.query.SRNO;
-    var FILENAME = req.query.FILENAME;
+    var KNNLCAO = req.query.KNNLCAO;
+    var SECTION = req.query.SECTION;
+    var OFFICE = req.query.OFFICE;
     var YEAR = req.query.YEAR;
+    var FILENUMBER = req.query.FILENUMBER;
     var CODE = req.query.CODE;
-    var TALUK = req.query.TALUK;
-    var HOBLI = req.query.HOBLI;
-    var VILLAGE = req.query.VILLAGE;
-    var SURVEYNUMBER = req.query.SURVEYNUMBER;
-    var pdfname = req.query.pdfname;
-    var comment = req.query.comment;
+    var PDFNAME = req.query.PDFNAME;
+    var COMMENT = req.query.COMMENT;
     var msg = req.query.msg;
-    // var indexName = req.query.indexName;
-    var indexName = req.query.listName;
-    console.log("----------------", 'indexName=====', indexName, "TALUK", TALUK, "pdfname-----", pdfname, "comment-----", comment, "=========", SRNO);
-    if (msg && indexName) {
+
+    if (msg ) {
 
         db.run(
-            `UPDATE ${indexName} SET COMMENT = ? WHERE SRNO = ? `,
+            `UPDATE alldata SET COMMENT = ? WHERE SRNO = ? `,
             [msg, SRNO],
             function (error) {
                 if (error) {
@@ -565,10 +566,10 @@ const pdfView = (req, res) => {
         console.log("Comment is not updated at addCommnet!");
     }
 
-    db.all(`SELECT * FROM ${indexName} WHERE SRNO = ?`, [SRNO], (err, row) => {
+    db.all(`SELECT * FROM alldata WHERE SRNO = ?`, [SRNO], (err, row) => {
         // console.log("row is---------------", row);
 
-        res.render('pdfView', { SRNO, FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, pdfname, comment, indexName, row });
+        res.render('pdfView', {pdfView: row, SRNO, KNNLCAO, SECTION, OFFICE, YEAR, FILENUMBER, CODE, PDFNAME, COMMENT});
     })
 }
 
@@ -577,23 +578,19 @@ const pdfView = (req, res) => {
 const pdfViewListview = (req, res) => {
     // var name = req.params.PDFNAME;
     var SRNO = req.query.SRNO;
-    var FILENAME = req.query.FILENAME;
-    var YEAR = req.query.YEAR;
+    var KNNLCAO = req.query.KNNLCAO;
+    var SECTION = req.query.SECTION;
+    var OFFICE = req.query.OFFICE;
+    var FILENUMBER = req.query.FILENUMBER;
     var CODE = req.query.CODE;
-    var TALUK = req.query.TALUK;
-    var HOBLI = req.query.HOBLI;
-    var VILLAGE = req.query.VILLAGE;
-    var SURVEYNUMBER = req.query.SURVEYNUMBER;
-    var pdfname = req.query.pdfname;
-    var comment = req.query.comment;
+    var PDFNAME = req.query.PDFNAME;
+    var COMMENT = req.query.COMMENT;
     var msg = req.query.msg;
-    // var indexName = req.query.indexName;
-    var listName = req.query.listName;
-    console.log("----------------", 'indexName=====', listName, "TALUK", TALUK, "pdfname-----", pdfname, "comment-----", comment, "=========", SRNO);
+
     if (msg && listName) {
 
         db.run(
-            `UPDATE ${listName} SET COMMENT = ? WHERE SRNO = ? `,
+            `UPDATE all data SET COMMENT = ? WHERE SRNO = ? `,
             [msg, SRNO],
             function (error) {
                 if (error) {
@@ -605,10 +602,10 @@ const pdfViewListview = (req, res) => {
         console.log("Comment is not updated at addCommnet!");
     }
 
-    db.all(`SELECT * FROM ${listName} WHERE SRNO = ?`, [SRNO], (err, row) => {
+    db.all(`SELECT * FROM alldata WHERE SRNO = ?`, [SRNO], (err, row) => {
         console.log("row is---------------", row);
-
-        res.render('pdfViewListview', { SRNO, FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, pdfname, comment, listName, row });
+        
+        res.render('pdfViewListview', { SRNO, KNNLCAO, SECTION, OFFICE, YEAR, FILENUMBER, CODE, PDFNAME, COMMENT});
     })
 }
 
@@ -1002,30 +999,16 @@ const addentryData = (req, res) => {
 }
 
 const deleteInfo = (req, res) => {
+    console.log('inside delete entry')
     var id = req.body.SRNO;
-    var indexName = req.body.indexName || req.body.listName;
-    console.log("indexNameindexNameindexName---", indexName);
-    var data = req.userData;
-    //  var mergePdf ='1';
-    db.run(`DELETE FROM ${indexName} WHERE SRNO = ?`, [id], function (error) {
+    console.log(id)
+    db.run(`DELETE FROM alldata WHERE SRNO = ?`, [id], function (error) {
         if (error) {
             console.error(error.message);
         }
-        //getting data from List table
-        //     db.all(`SELECT * FROM ${indexName}`, (error, row) => {
-        //         // console.log("listview page row-----", row);
-
-
-        //         if (error) {
-        //             console.log("erorrrr in table--userController----", error);
-        //         }
-        //         // console.log("listviewpage row is-------",row);
-        //         // res.render('listviewpage', { listviewpage: row, permission: 1, indexName })
-        //         // res.render('allSearch', { listviewpage: row, permission: 1, indexName })
-
-        //     });
+        
     });
-    return
+ res.render('allSearch')
 
 }
 

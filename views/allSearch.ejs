@@ -62,51 +62,51 @@
     <%- include('./public/Navbar.ejs') %>
 
 
-        <div id="searchResultsContainer">
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="text" id="searchInput" class="inputFieldClass" placeholder="Search FILENAME..."
-                                onkeyup="searchData()">
-                        </th>
-                        <th>
-                            <input type="text" id="yearInput" class="inputFieldClass" placeholder="Search YEAR..."
-                                onkeyup="searchData()">
-                        </th>
-                        <th>
-                            <input type="text" id="codeInput" class="inputFieldClass" placeholder="Search CODE..."
-                                onkeyup="searchData()">
-                        </th>
-                        <th>
-                            <input type="text" id="talukInput" class="inputFieldClass" placeholder="Search TALUK..."
-                                onkeyup="searchData()">
-                        </th>
-                        <th>
-                            <input type="text" id="hobliInput" class="inputFieldClass" placeholder="Search HOBLI..."
-                                onkeyup="searchData()">
-                        </th>
-                        <th>
-                            <input type="text" id="villageInput" class="inputFieldClass" placeholder="Search VILLAGE..."
-                                onkeyup="searchData()">
-                        </th>
-                        <th>
-                            <input type="text" id="surveyInput" class="inputFieldClass"
-                                placeholder="Search SURVEYNUMBER..." onkeyup="searchData()">
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>FILE NAME</th>
-                        <th>YEAR</th>
-                        <th>CODE</th>
-                        <th>TALUK</th>
-                        <th>HOBLI</th>
-                        <th>VILLAGE</th>
-                        <th>SURVEY NUMBER</th>
-                        <th>Pdf View</th>
-                        <th>Delete</th>
-                        <th>Add Comment</th>
-                    </tr>
+    <div id="searchResultsContainer">
+        <table class="results-table" style="margin-left: 10px; margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="text" id="KNNLCAO" class="inputFieldClass" placeholder="Search KNNL CAO..."
+                            onkeyup="searchData()">
+                    </th>
+                    <th>
+                        <input type="text" id="SECTION" class="inputFieldClass" placeholder="Search SECTION..."
+                            onkeyup="searchData()">
+                    </th>
+                    <th>
+                        <input type="text" id="OFFICE" class="inputFieldClass" placeholder="Search OFFICE..."
+                            onkeyup="searchData()">
+                    </th>
+                    <th>
+                        <input type="text" id="YEAR" class="inputFieldClass" placeholder="Search YEAR..."
+                            onkeyup="searchData()">
+                    </th>
+                    <th>
+                        <input type="text" id="FILENUMBER" class="inputFieldClass" placeholder="Search FILENUMBER..."
+                            onkeyup="searchData()">
+                    </th>
+                    <th>
+                        <input type="text" id="CODE" class="inputFieldClass" placeholder="Search CODE..."
+                            onkeyup="searchData()">
+                    </th>
+                    <!-- <th>
+                        <input type="text" id="surveyInput" class="inputFieldClass"
+                            placeholder="Search SURVEYNUMBER..." onkeyup="searchData()">
+                    </th> -->
+                </tr>
+                <tr>
+                    <th>KNNLCAO</th>
+                    <th>SECTION</th>
+                    <th>OFFICE</th>
+                    <th>YEAR</th>
+                    <th>FILENUMBER</th>
+                    <th>CODE</th>
+                    <th>View</th>
+                    <th>Delete</th>
+                    <th>Merge</th>
+                    <!-- <th>SURVEY NUMBER</th> -->
+                </tr>
                 </thead>
                 <tbody id="searchResults"></tbody>
             </table>
@@ -127,17 +127,17 @@
             let totalResults = 0;
 
             function searchData() {
-                const filenameInput = document.getElementById('searchInput').value;
-                const yearInput = document.getElementById('yearInput').value;
-                const codeInput = document.getElementById('codeInput').value;
-                const talukInput = document.getElementById('talukInput').value;
-                const hobliInput = document.getElementById('hobliInput').value;
-                const villageInput = document.getElementById('villageInput').value;
-                const surveyInput = document.getElementById('surveyInput').value;
+                const KNNLCAO = document.getElementById('KNNLCAO').value;
+                const SECTION = document.getElementById('SECTION').value;
+                const OFFICE = document.getElementById('OFFICE').value;
+                const YEAR = document.getElementById('YEAR').value;
+                const FILENUMBER = document.getElementById('FILENUMBER').value;
+                const CODE = document.getElementById('CODE').value;
+                // const surveyInput = document.getElementById('surveyInput').value;
                 const loadingIndicator = document.getElementById('loadingIndicator');
                 loadingIndicator.style.display = 'block';
 
-                fetch(`/search/query?filename=${filenameInput}&year=${yearInput}&code=${codeInput}&taluk=${talukInput}&hobli=${hobliInput}&village=${villageInput}&survey=${surveyInput}&page=${currentPage}&resultsPerPage=${resultsPerPage}`)
+               fetch(`/search/query?KNNLCAO=${KNNLCAO}&SECTION=${SECTION}&OFFICE=${OFFICE}&YEAR=${YEAR}&FILENUMBER=${FILENUMBER}&CODE=${CODE}&page=${currentPage}&resultsPerPage=${resultsPerPage}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -223,7 +223,7 @@
 
                 pageResults.forEach(result => {
                     const row = document.createElement('tr');
-                    const columns = ['FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER', 'PDFNAME', 'Delete', 'COMMENT'];
+                    const columns = ['KNNLCAO', 'SECTION', 'OFFICE', 'YEAR', 'FILENUMBER', 'CODE', 'PDFNAME', 'Delete', 'MERGE'];
 
                     columns.forEach(columnName => {
                         const cell = document.createElement('td');
@@ -235,8 +235,8 @@
 
                             // Add hidden input fields
                             const hiddenFields = [
-                                'SRNO', 'FILENAME', 'YEAR', 'CODE', 'TALUK', 'HOBLI', 'VILLAGE', 'SURVEYNUMBER',
-                                'pdfname', 'comment', 'indexName', 'listName'
+                                'SRNO', 'KNNLCAO', 'SECTION', 'OFFICE', 'YEAR', 'FILENUMBER', 'CODE',
+                                'PDFNAME', 'COMMENT'
                             ];
 
                             hiddenFields.forEach(fieldName => {
@@ -268,7 +268,7 @@
 
                             // Add hidden input fields
                             const hiddenFields = [
-                                'SRNO', 'listName'
+                                'SRNO'
                             ];
 
                             hiddenFields.forEach(fieldName => {
@@ -292,7 +292,7 @@
 
                             // Append the form to the cell
                             cell.appendChild(form);
-                        } else if (columnName === 'COMMENT') {
+                        } else if (columnName === 'MERGE') {
                             // Create the form and button for FILENAME column
                             const a = document.createElement('a');
                             a.href = `/uploadpdf/${result.PDFNAME}`;

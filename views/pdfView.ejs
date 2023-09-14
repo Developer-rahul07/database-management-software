@@ -18,18 +18,7 @@
 
 <body style="background-color:lightblue;">
     <%- include('./public/Navbar.ejs') %>
-        <div class="arrow" style="margin-left: 100px; margin-top: 50px;">
-            <form action="/allsearch" method="get" style="display: flex; margin: 10px;">
-            
-            <input type="hidden" id="indexName" name="name" value="<%= indexName %>">
-            <button style="background: bottom;
-            border: aliceblue;
-            color: black;"> <i class="fa fa-arrow-circle-left" style="font-size:24px;"></i></button>
-            <!-- <a ><i class="rsfa fa-arrow-circle-left" style="font-size:24px;"></i></a> -->
-        </div>
        
-            </form>
-        </div>
 
 
          
@@ -39,23 +28,21 @@
                     <div class="comment-form" style="display: flex; ">
                         <form action="/pdf/:PDFNAME" method="get" >
                             <div class="input-group">
-                                <% row.forEach(function(item){ %>
+
+                                <% pdfView.forEach(function(item){ %>
                                   <input type="text" style="margin-left: 30px; width: 400px;" class="form-control " id="msg" name="msg" value="<%= item.COMMENT %>" placeholder="Add Message">
                                   <% }) %>
                               </div>
                                 <input type="hidden" id="SRNO" name="SRNO" value="<%= SRNO %>">
-                                <input type="hidden" id="FILENAME" name="FILENAME" value="<%= FILENAME %>">
+                                <input type="hidden" id="KNNLCAO" name="KNNLCAO" value="<%= KNNLCAO %>">
+                                <input type="hidden" id="SECTION" name="SECTION" value="<%= SECTION %>">
+                                <input type="hidden" id="OFFICE" name="OFFICE" value="<%= OFFICE %>">
                                 <input type="hidden" id="YEAR" name="YEAR" value="<%= YEAR %>">
+                                <input type="hidden" id="FILENUMBER" name="FILENUMBER" value="<%= FILENUMBER %>">
                                 <input type="hidden" id="CODE" name="CODE" value="<%= CODE %>">
-                                <input type="hidden" id="TALUK" name="TALUK" value="<%= TALUK %>">
-                                <input type="hidden" id="HOBLI" name="HOBLI" value="<%= HOBLI %>">
-                                <input type="hidden" id="VILLAGE" name="VILLAGE" value="<%= VILLAGE %>">
-                                <input type="hidden" id="SURVEYNUMBER" name="SURVEYNUMBER" value="<%= SURVEYNUMBER %>">
-                                <input type="hidden" id="pdfname" name="pdfname" value="<%= pdfname %>">
-                                <input type="hidden" id="comment" name="comment" value="<%= comment %>">
-                                <% row.forEach(function(item){ %>
-                                <input type="hidden" id="indexName" name="listName" value="<%= item.listName %>">
-                                <% }) %>
+                                <input type="hidden" id="PDFNAME" name="PDFNAME" value="<%= PDFNAME %>">
+                                <input type="hidden" id="COMMENT" name="COMMENT" value="<%= COMMENT %>">
+                               
                             </div>
                             <div class="text-center m-2">
                                 <input type="submit" value="Add Comment" class="btn btn-info btn-block rounded-0"
@@ -63,7 +50,7 @@
                             </div>
                     </form>
                     
-                    <% row.forEach(function(item){ %>
+                    <% pdfView.forEach(function(item){ %>
             
                         <div class="card-body ">
                             <h1 class="text-center ">
@@ -79,49 +66,38 @@
                           
                                         <tbody>
                 
-                                            <% row.forEach(function(item){ %>
+                                            <% pdfView.forEach(function(item){ %>
                                                 <tr>
-                                                    <td>File Name</td>
+                                                    <td>KNNLCAO</td>
                                                     <td>
-                                                        <%= item.FILENAME %>
+                                                        <%= item.KNNLCAO %>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                <td>Year</td>
+                                                <td>SECTION</td>
+                                                    <td> item.SECTION %>
+                                                    </td>
+                                                </tr>
+                                                       
+                                                <tr>
+                                                <td>OFFICE</td>
+                                                    <td>
+                                                        <%= item.OFFICE %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>YEAR</td>
                                                     <td>
                                                         <%= item.YEAR %>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                <td>code</td>
+                                                    <td>CODE</td>
                                                     <td>
                                                         <%= item.CODE %>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>Taluka</td>
-                                                    <td>
-                                                        <%= item.TALUK %>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hobali</td>
-                                                    <td>
-                                                        <%= item.HOBLI %>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Village</td>
-                                                    <td>
-                                                        <%= item.VILLAGE %>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Survey Number</td>
-                                                    <td>
-                                                        <%= item.SURVEYNUMBER %>
-                                                    </td>
-                                                </tr>
+                                                
                                                    </tbody>
                                                    </table>
                 </div>
@@ -132,7 +108,7 @@
             </div>
                 <% }) %>
                 <div class="col-8">
-                    <iframe src="../assets/pdf/<%= pdfname %>.pdf" width="100%" height="976" type="application/pdf">
+                    <iframe src="../assets/pdf/<%= PDFNAME %>.pdf" width="100%" height="976" type="application/pdf">
                         <!-- <iframe src="../.." width="100%" height="976" type="application/pdf"> -->
                 </div>
                 </div>

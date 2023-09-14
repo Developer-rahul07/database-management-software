@@ -18,7 +18,10 @@ li{
     list-style-type: none;
 }
 
-header{
+header{ 
+    margin-left: 70px;
+    margin-right: 70px;
+    border-radius: 10px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -26,6 +29,10 @@ header{
     background-color: #2C3E50;
     justify-content: space-between;
     z-index: 100;
+    margin-top: 20px; /* Adjust the margin-top as needed */
+    /* width: 110%; */
+    height: 60px;
+    
 }
 
 nav ul{
