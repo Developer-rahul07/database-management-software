@@ -98,9 +98,16 @@ router.get('/admin', checkAuth, (req, res) => {
     res.render('Admin', { permission: data });
 })
 
+
 // About Page
 router.get('/about', (req, res) => {
     res.render('About');
+})
+
+router.get('/Addentryinfo', (req, res) => {
+    var data = req.userData
+    console.log(data)
+    // res.render('Addentryinfo', { permission: data });
 })
 
 // Software Details Page
@@ -134,8 +141,10 @@ router.post('/mergepdf', userController.mergePdf)
 
 // Welcome page 
 router.get('/welcome', checkAuth, (req, res) => {
-    res.render('Welcome');
+    var data = req.userData
+    res.render('Welcome', { permission: data });
 })
+
 
 // Route for Merge Pdf
 router.get('/commentinfo/:SRNO', userController.commentInfo)

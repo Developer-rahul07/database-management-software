@@ -850,62 +850,102 @@ const getLogin = (req, res) => {
     }
 }
 
-
 const loginUser = (req, res) => {
-
     var empid = req.body.empid;
     var password = req.body.password;
 
     let errors = [];
 
     if (!empid || !password) {
-        errors.push({ msg: 'please fill the all fields' });
+        errors.push({ msg: 'Please fill in all fields' });
     }
-
 
     if (errors.length > 0) {
         res.render('Login', {
-            errors, empid, password
-        })
-    }
-    else {
-        db.each(`SELECT * FROM mytable WHERE empid = ? `, empid, (err, row) => {
-
-            if (row.password === password && row.empid === empid) {
-                console.log("user Logged in");
-                var token = jwt.sign(
-                    {
-                        name: row.name,
-                        empid: row.empid,
-                        cUser: row.cUser,
-                        updateUser: row.updateUser,
-                        delUser: row.delUser,
-                        addList: row.addList,
-                        delList: row.delList,
-                        addEntry: row.addEntry,
-                        updateEntry: row.updateEntry,
-                        mergePdf: row.mergePdf,
-                        deleteEntry: row.deleteEntry
-                    },
-                    'secret',
-                    {
-                        expiresIn: "1h"
-                    })
-
-                // console.log(token);
-                res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge: 3600000 })
-                res.redirect('/welcome');
-                // res.status(200).json({message:"ok",token:token})
+            errors,
+            empid,
+            password
+        });
+    } else {
+        db.all("SELECT * FROM master", function (err, rows) {
+            if (err) {
+                console.error(err.message);
+                return res.status(500).send("Internal Server Error");
             }
-            else {
-                errors.push({ msg: 'Invalid Credentials!' })
-                res.render('Login', {
-                    errors, empid
-                })
+
+            if (rows.length > 0 && rows[0].empid === empid) {
+                console.log("master admin");
+                if (rows[0].password === password) {
+                    console.log("Master user Logged in");
+                    var token = jwt.sign(
+                        {
+                            name: rows[0].name, // Use rows[0] instead of row
+                            empid: rows[0].empid, // Use rows[0] instead of row
+                            addEntry: rows[0].addEntry, // Use rows[0] instead of row
+                            updateEntry: rows[0].updateEntry, // Use rows[0] instead of row
+                            mergePdf: rows[0].mergePdf, // Use rows[0] instead of row
+                            deleteEntry: rows[0].deleteEntry, // Use rows[0] instead of row
+                            addUser: 1, // Use rows[0] instead of row
+                            deleteUser: 1, // Use rows[0] instead of row
+                            admin: 1
+                        },
+                        'secret',
+                        {
+                            expiresIn: "1h"
+                        }
+                    );
+
+                    res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge: 3600000 });
+                    res.redirect('/welcome');
+                } else {
+                    errors.push({ msg: 'Invalid Credentials!' });
+                    res.render('Login', {
+                        errors,
+                        empid
+                    });
+                }
+            } else {
+                console.log("other admin");
+                db.each("SELECT * FROM mytable WHERE empid = ?", empid, (err, row) => {
+                    if (err) {
+                        console.error(err.message);
+                        return res.status(500).send("Internal Server Error");
+                    }
+
+                    if (row && row.password === password) {
+                        console.log("Normal user Logged in");
+                        var token = jwt.sign(
+                            {
+                                name: row.name,
+                                empid: row.empid,
+                                addEntry: row.addEntry,
+                                updateEntry: row.updateEntry,
+                                mergePdf: row.mergePdf,
+                                deleteEntry: row.deleteEntry,
+                                addUser: 0, // Use rows[0] instead of row
+                                deleteUser: 0, // Use rows[0] instead of row
+                                admin: 0
+                            },
+                            'secret',
+                            {
+                                expiresIn: "1h"
+                            }
+                        );
+
+                        res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge: 3600000 });
+                        res.redirect('/welcome');
+                    } else {
+                        errors.push({ msg: 'Invalid Credentials!' });
+                        res.render('Login', {
+                            errors,
+                            empid
+                        });
+                    }
+                });
             }
-        })
+        });
     }
-}
+};
 
 
 const getExceldata = (req, res) => {
@@ -924,20 +964,17 @@ const getExceldata = (req, res) => {
 
 const editExceldata = (req, res) => {
 
-    var table = req.body.tablename;
-    var index = req.body.index;
-    var FILENAME = req.body.FILENAME;
-    var YEAR = req.body.YEAR;
+    var KNNLCAO = req.body.KNNLCAO;
+    var SECTION = req.body.SECTION;
+    var OFFICE = req.body.OFFICE;
+    var FILENUMBER = req.body.FILENUMBER;
     var CODE = req.body.CODE;
-    var TALUK = req.body.TALUK;
-    var HOBLI = req.body.HOBLI;
-    var VILLAGE = req.body.VILLAGE;
-    var SURVEYNUMBER = req.body.SURVEYNUMBER;
+    var YEAR = req.body.YEAR;
     var PDFNAME = req.body.PDFNAME;
 
     db.run(
-        `UPDATE ${table} SET FILENAME = ?, YEAR = ?, CODE = ?, TALUK = ?, HOBLI = ?, VILLAGE = ?,SURVEYNUMBER = ?,PDFNAME = ? WHERE SRNO = ?`,
-        [FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, PDFNAME, index],
+        `UPDATE alldata SET KNNLCAO = ?, SECTION = ?, YEAR = ?, FILENUMBER = ?, CODE = ?, PDFNAME = ? WHERE SRNO = ?`,
+        [KNNLCAO, SECTION, OFFICE, YEAR, FILENUMBER, CODE, PDFNAME],
         function (error) {
             if (error) {
                 console.error(error.message);
@@ -949,23 +986,21 @@ const editExceldata = (req, res) => {
 
 const addEntrydata = (req, res) => {
 
-    var table = req.body.tablename;
-    var FILENAME = req.body.FILENAME;
-    var YEAR = req.body.YEAR;
+    var KNNLCAO = req.body.KNNLCAO;
+    var SECTION = req.body.SECTION;
+    var OFFICE = req.body.OFFICE;
+    var FILENUMBER = req.body.FILENUMBER;
     var CODE = req.body.CODE;
-    var TALUK = req.body.TALUK;
-    var HOBLI = req.body.HOBLI;
-    var VILLAGE = req.body.VILLAGE;
-    var SURVEYNUMBER = req.body.SURVEYNUMBER;
+    var YEAR = req.body.YEAR;
     var PDFNAME = req.body.PDFNAME;
 
+console.log(KNNLCAO)
 
-
-    db.run(`INSERT INTO ${table}(FILENAME,YEAR,CODE,TALUK,HOBLI,VILLAGE,SURVEYNUMBER,PDFNAME,COMMENT,listName) VALUES(?,?,?,?,?,?,?,?,'No Comment',?)`, [FILENAME, YEAR, CODE, TALUK, HOBLI, VILLAGE, SURVEYNUMBER, PDFNAME, table], function (err) {
+    db.run(`INSERT INTO alldata (KNNLCAO, SECTION, OFFICE, YEAR, FILENUMBER, CODE, PDFNAME, COMMENT) VALUES(?,?,?,?,?,?,?,'-')`, [KNNLCAO, SECTION, OFFICE, YEAR, FILENUMBER, CODE, PDFNAME], function (err) {
         if (err) {
             console.log(err.message);
         }
-        // console.log(`A row has been inserted `);
+        console.log(`A row has been inserted `);
         res.redirect('/admin');
     });
 }
@@ -977,7 +1012,7 @@ const logout = (req, res) => {
 
 const excelInfo = (req, res) => {
 
-    db.all("SELECT * FROM List", function (err, rows) {
+    db.all("SELECT * FROM alldata", function (err, rows) {
         if (err) {
             console.log(err);
         }
@@ -989,7 +1024,7 @@ const excelInfo = (req, res) => {
 
 const addentryData = (req, res) => {
 
-    db.all("SELECT * FROM List", function (err, rows) {
+    db.all("SELECT * FROM alldata", function (err, rows) {
         if (err) {
             console.log(err);
         }
